@@ -31,3 +31,9 @@ Installation de Python 3 et du module Qt
     
     import os
     import re
+Installation de Mathplotlib
+---------------------------
+:: 
+pip mathplotlib
+
+
