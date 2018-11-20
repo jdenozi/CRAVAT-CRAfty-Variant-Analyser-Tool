@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
-
+import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import main_window
@@ -25,6 +25,11 @@ class Ui_MainWindow(object):
         self.comboBox_3 = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox_3.setObjectName("comboBox_3")
         self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+    
+        
         self.verticalLayout_3.addWidget(self.comboBox_3)
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralWidget)
         self.plainTextEdit.setObjectName("plainTextEdit")
@@ -36,10 +41,15 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
+        
         self.verticalLayout_3.addWidget(self.comboBox)
         self.gridLayout.addLayout(self.verticalLayout_3, 0, 0, 1, 2)
+        
         self.plainTextEdit_2 = QtWidgets.QPlainTextEdit(self.centralWidget)
         self.plainTextEdit_2.setObjectName("plainTextEdit_2")
+        
+        
+        
         self.gridLayout.addWidget(self.plainTextEdit_2, 0, 2, 4, 1)
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setSpacing(6)
@@ -115,6 +125,9 @@ class Ui_MainWindow(object):
         
         self.pushButton.clicked.connect(self.plot_mutation_par_chromosome)
         
+        #self.pushButton.clicked.connect( )
+        
+        
         self.actionSauvegarder = QtWidgets.QAction(MainWindow)
         self.actionSauvegarder.setObjectName("actionSauvegarder")
         self.actionCopier = QtWidgets.QAction(MainWindow)
@@ -150,7 +163,24 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.comboBox_3.setItemText(0, _translate("MainWindow", "Quelles fonctionnalités voulez-vous utiliser ?"))
+        
+        self.comboBox_3.setItemText(0, _translate("MainWindow", "Which function do you want to use?"))
+        self.comboBox_3.setItemText(1, _translate("MainWindow", "How many Chromosome do file have"))
+        self.comboBox_3.currentIndexChanged.connect(self.fillNumberChromosome)
+        self.comboBox_3.setItemText(2, _translate("MainWindow", "How many mutation do file have"))
+        self.comboBox_3.currentIndexChanged.connect(self.fillNumberMutationTotale)
+        self.comboBox_3.setItemText(3, _translate("MainWindow", "How many mutation do chhromosome have"))
+        self.comboBox_3.currentIndexChanged.connect(self.fillNumberMutation)
+        self.comboBox_3.setItemText(3, _translate("MainWindow", "Dynamic plot for mutation visualization"))
+        self.comboBox_3.currentIndexChanged.connect(self.fillDynamicPlot)
+        #self.comboBox_3.setItemText(3, _translate("MainWindow", "Position chromosome sur une graphique"))
+        
+
+        
+            
+        
+        
+        
         self.plainTextEdit.setPlainText(_translate("MainWindow", "\n"
 "a\n"
 "aa\n"
@@ -213,3 +243,11 @@ class Ui_MainWindow(object):
         self.actionFull_screen.setShortcut(_translate("MainWindow", "F11"))
         self.actionA_propos.setText(_translate("MainWindow", "A propos"))
         self.actionSignaler_un_bug.setText(_translate("MainWindow", "Signaler un bug "))
+        
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    ex = Ui_MainWindow()
+    w = QtWidgets.QMainWindow()
+    ex.setupUi(w)
+    w.show()
+    sys.exit(app.exec_())
