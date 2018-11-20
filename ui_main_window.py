@@ -1,75 +1,91 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot
+import main_window
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(505, 372)
+        MainWindow.resize(673, 486)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.centralWidget)
-        self.gridLayout.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralWidget)
+        self.gridLayout_2.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_2.setSpacing(6)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setSpacing(6)
         self.gridLayout.setObjectName("gridLayout")
-        self.textBrowser = QtWidgets.QTextBrowser(self.centralWidget)
-        self.textBrowser.setObjectName("textBrowser")
-        self.gridLayout.addWidget(self.textBrowser, 6, 2, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(self.centralWidget)
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton, 7, 0, 1, 1)
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setSpacing(6)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.comboBox = QtWidgets.QComboBox(self.centralWidget)
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.verticalLayout.addWidget(self.comboBox)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setSpacing(6)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.comboBox_3 = QtWidgets.QComboBox(self.centralWidget)
+        self.comboBox_3.setObjectName("comboBox_3")
+        self.comboBox_3.addItem("")
+        self.verticalLayout_3.addWidget(self.comboBox_3)
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralWidget)
+        self.plainTextEdit.setObjectName("plainTextEdit")
+        self.verticalLayout_3.addWidget(self.plainTextEdit)
         self.comboBox_2 = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("")
-        self.verticalLayout.addWidget(self.comboBox_2)
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralWidget)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.verticalLayout.addWidget(self.pushButton_2)
-        self.gridLayout.addLayout(self.verticalLayout, 0, 2, 1, 1)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setSpacing(6)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.groupBox = QtWidgets.QGroupBox(self.centralWidget)
-        self.groupBox.setObjectName("groupBox")
-        self.checkBox = QtWidgets.QCheckBox(self.groupBox)
-        self.checkBox.setGeometry(QtCore.QRect(10, 30, 82, 23))
+        self.verticalLayout_3.addWidget(self.comboBox_2)
+        self.comboBox = QtWidgets.QComboBox(self.centralWidget)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.verticalLayout_3.addWidget(self.comboBox)
+        self.gridLayout.addLayout(self.verticalLayout_3, 0, 0, 1, 2)
+        self.plainTextEdit_2 = QtWidgets.QPlainTextEdit(self.centralWidget)
+        self.plainTextEdit_2.setObjectName("plainTextEdit_2")
+        self.gridLayout.addWidget(self.plainTextEdit_2, 0, 2, 4, 1)
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_4.setSpacing(6)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.checkBox = QtWidgets.QCheckBox(self.centralWidget)
         self.checkBox.setObjectName("checkBox")
-        self.checkBox_2 = QtWidgets.QCheckBox(self.groupBox)
-        self.checkBox_2.setGeometry(QtCore.QRect(10, 60, 82, 23))
+        self.verticalLayout_4.addWidget(self.checkBox)
+        self.checkBox_2 = QtWidgets.QCheckBox(self.centralWidget)
         self.checkBox_2.setObjectName("checkBox_2")
-        self.checkBox_3 = QtWidgets.QCheckBox(self.groupBox)
-        self.checkBox_3.setGeometry(QtCore.QRect(10, 90, 82, 23))
-        self.checkBox_3.setObjectName("checkBox_3")
-        self.horizontalLayout_2.addWidget(self.groupBox)
-        self.verticalScrollBar = QtWidgets.QScrollBar(self.centralWidget)
-        self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
-        self.verticalScrollBar.setObjectName("verticalScrollBar")
-        self.horizontalLayout_2.addWidget(self.verticalScrollBar)
-        self.listView = QtWidgets.QListView(self.centralWidget)
-        self.listView.setObjectName("listView")
-        self.horizontalLayout_2.addWidget(self.listView)
-        self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 2)
-        self.checkBox_4 = QtWidgets.QCheckBox(self.centralWidget)
-        self.checkBox_4.setObjectName("checkBox_4")
-        self.gridLayout.addWidget(self.checkBox_4, 7, 2, 1, 1)
-        self.graphicsView = QtWidgets.QGraphicsView(self.centralWidget)
-        self.graphicsView.setObjectName("graphicsView")
-        self.gridLayout.addWidget(self.graphicsView, 6, 0, 1, 1)
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_3.setSpacing(6)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.gridLayout.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
+        self.verticalLayout_4.addWidget(self.checkBox_2)
+        self.gridLayout.addLayout(self.verticalLayout_4, 1, 0, 2, 1)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setSpacing(6)
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.centralWidget)
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.horizontalLayout_5.addWidget(self.lineEdit_3)
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.centralWidget)
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.horizontalLayout_5.addWidget(self.lineEdit_4)
+        self.gridLayout.addLayout(self.horizontalLayout_5, 1, 1, 1, 1)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setSpacing(6)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralWidget)
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.horizontalLayout_4.addWidget(self.lineEdit_2)
+        self.lineEdit = QtWidgets.QLineEdit(self.centralWidget)
+        self.lineEdit.setObjectName("lineEdit")
+        self.horizontalLayout_4.addWidget(self.lineEdit)
+        self.gridLayout.addLayout(self.horizontalLayout_4, 2, 1, 1, 1)
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_5.setSpacing(6)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        
+        self.pushButton = QtWidgets.QPushButton(self.centralWidget)
+        self.pushButton.setObjectName("pushButton")
+        
+        
+        
+        self.verticalLayout_5.addWidget(self.pushButton)
+        self.gridLayout.addLayout(self.verticalLayout_5, 3, 0, 1, 2)
+        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 505, 22))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 673, 22))
         self.menuBar.setObjectName("menuBar")
         self.menuFichier = QtWidgets.QMenu(self.menuBar)
         self.menuFichier.setObjectName("menuFichier")
@@ -87,9 +103,17 @@ class Ui_MainWindow(object):
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
         self.actionNouveau_fichier = QtWidgets.QAction(MainWindow)
+        
+        #chromosome_ref=self.on_actionOuvrir_triggered()
+        
         self.actionNouveau_fichier.setObjectName("actionNouveau_fichier")
         
         self.actionNouveau_fichier.triggered.connect(self.on_actionOuvrir_triggered)
+        
+        #chromosome_ref=self.on_actionOuvrir_triggered()
+        
+        
+        self.pushButton.clicked.connect(self.plot_mutation_par_chromosome)
         
         self.actionSauvegarder = QtWidgets.QAction(MainWindow)
         self.actionSauvegarder.setObjectName("actionSauvegarder")
@@ -120,25 +144,59 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        
+        
+        
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VCF-VS"))
-        self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">INFORMATIONS:</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.pushButton.setText(_translate("MainWindow", "Run Graphique"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Chromosome"))
-        self.comboBox_2.setItemText(0, _translate("MainWindow", "Position"))
-        self.pushButton_2.setText(_translate("MainWindow", "Requête"))
-        self.groupBox.setTitle(_translate("MainWindow", "Tout sélectionner"))
-        self.checkBox.setText(_translate("MainWindow", "Chromosomes"))
-        self.checkBox_2.setText(_translate("MainWindow", "Positions"))
-        self.checkBox_3.setText(_translate("MainWindow", "Altérations"))
-        self.checkBox_4.setText(_translate("MainWindow", "Nouvelle fenêtre"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.comboBox_3.setItemText(0, _translate("MainWindow", "Quelles fonctionnalités voulez-vous utiliser ?"))
+        self.plainTextEdit.setPlainText(_translate("MainWindow", "\n"
+"a\n"
+"aa\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"aa\n"
+"a\n"
+"\n"
+"a\n"
+"aa"))
+        self.comboBox_2.setItemText(0, _translate("MainWindow", "Sélection du chromosome"))
+        self.comboBox.setItemText(0, _translate("MainWindow", "Sélection de la mutation"))
+        self.plainTextEdit_2.setPlainText(_translate("MainWindow", "a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"\n"
+"a\n"
+"aa\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+"a\n"
+""))
+        self.checkBox.setText(_translate("MainWindow", "qualité"))
+        self.checkBox_2.setText(_translate("MainWindow", "position"))
+        
+        self.pushButton.setText(_translate("MainWindow", "Launch"))
+        
+        
         self.menuFichier.setTitle(_translate("MainWindow", "Fichier"))
         self.menuEdition.setTitle(_translate("MainWindow", "Edition"))
         self.menuFen_tre.setTitle(_translate("MainWindow", "Fenêtre"))
@@ -146,10 +204,12 @@ class Ui_MainWindow(object):
         self.actionNouveau_fichier.setText(_translate("MainWindow", "Nouveau fichier"))
         self.actionSauvegarder.setText(_translate("MainWindow", "Sauvegarder"))
         self.actionCopier.setText(_translate("MainWindow", "Copier"))
+        self.actionCopier.setShortcut(_translate("MainWindow", "Ctrl+C"))
         self.actionColler.setText(_translate("MainWindow", "Coller"))
-        self.actionSupprimer.setText(_translate("MainWindow", "Supprimer"))
+        self.actionColler.setShortcut(_translate("MainWindow", "Ctrl+V"))
+        self.actionSupprimer.setText(_translate("MainWindow", "Retour en arrière"))
+        self.actionSupprimer.setShortcut(_translate("MainWindow", "Ctrl+Z"))
         self.actionFull_screen.setText(_translate("MainWindow", "Full screen"))
+        self.actionFull_screen.setShortcut(_translate("MainWindow", "F11"))
         self.actionA_propos.setText(_translate("MainWindow", "A propos"))
         self.actionSignaler_un_bug.setText(_translate("MainWindow", "Signaler un bug "))
-        
-                
