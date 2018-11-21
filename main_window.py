@@ -132,23 +132,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             event.ignore()
             
             
-    def fillNumberChromosome(self, message):
+    def updateText(self, message):
         self.plainTextEdit.clear()
-        message="Fonction calculant le nombre de chromosome du fichier VCF \n Type = non graphique"
-        self.plainTextEdit.setPlainText(message )
-       
-    def fillNumberMutation(self, message):
-        self.plainTextEdit.clear()
-        message="Function which calcul the sum of mutation for one choosen Chromosome \n Type= non Graph"
-        self.plainTextEdit.setPlainText(message )
-        
-    def fillNumberMutationTotale(self, message):
-        self.plainTextEdit.clear()
-        message="Function which calcul the total sum of mutation "
-        self.plainTextEdit.setPlainText(message )
-        
-        
-    def fillDynamicPlot(self, message):
-        self.plainTextEdit.clear()
-        message="Function which allow the view of every Chromosome mutation \n Type = Graph "
-        self.plainTextEdit.setPlainText(message )
+        if self.comboBox_3.currentIndex()==0:
+                message="Informations about methods"
+                self.plainTextEdit.setPlainText(message )
+        if self.comboBox_3.currentIndex()==1:
+            message="Function which calcul the current number of Chromosome in the current vcf file \nType= Text"
+            self.plainTextEdit.setPlainText(message )
+        if self.comboBox_3.currentIndex()==2:
+                message="Function which calcul the current number of Chromosome mutation in the current vcf file \nType=text"
+                self.plainTextEdit.setPlainText(message )
+        if self.comboBox_3.currentIndex()==3:
+                message="Graphs of the current number of chromosome mutation in the current vcf file \nType= Graph\nColor code mean that the number of mutation is above or behind the average Chromosome of the entire file"
+                self.plainTextEdit.setPlainText(message )
+        if self.comboBox_3.currentIndex()==4:
+                message="Graphs of the current number of chromosome mutation in the current Chromosome \nType= Graph"
+                self.plainTextEdit.setPlainText(message )
