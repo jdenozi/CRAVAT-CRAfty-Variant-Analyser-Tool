@@ -23,6 +23,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.comboBox_3 = QtWidgets.QComboBox(self.centralWidget)
+        global comboBox_3
         self.comboBox_3.setObjectName("comboBox_3")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
@@ -162,17 +163,25 @@ class Ui_MainWindow(object):
         
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         
+        
+        #Connect any comboBox with plaintextEdit for refresh the information about the current method
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.comboBox_3.setItemText(0, _translate("MainWindow", "Which function do you want to use?"))
         self.comboBox_3.setItemText(1, _translate("MainWindow", "How many Chromosome do file have"))
-        self.comboBox_3.currentIndexChanged.connect(self.fillNumberChromosome)
+        self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(2, _translate("MainWindow", "How many mutation do file have"))
-        self.comboBox_3.currentIndexChanged.connect(self.fillNumberMutationTotale)
+        self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(3, _translate("MainWindow", "How many mutation do chhromosome have"))
-        self.comboBox_3.currentIndexChanged.connect(self.fillNumberMutation)
-        self.comboBox_3.setItemText(3, _translate("MainWindow", "Dynamic plot for mutation visualization"))
-        self.comboBox_3.currentIndexChanged.connect(self.fillDynamicPlot)
+        self.comboBox_3.activated[int].connect(self.updateText)
+        self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation "))
+        self.comboBox_3.activated[int].connect(self.updateText)
+        self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation in a choosen Chromosome "))
+        self.comboBox_3.activated[int].connect(self.updateText)
+        
+        
+        
+        
         #self.comboBox_3.setItemText(3, _translate("MainWindow", "Position chromosome sur une graphique"))
         
 
@@ -181,19 +190,7 @@ class Ui_MainWindow(object):
         
         
         
-        self.plainTextEdit.setPlainText(_translate("MainWindow", "\n"
-"a\n"
-"aa\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"aa\n"
-"a\n"
-"\n"
-"a\n"
-"aa"))
+        self.plainTextEdit.setPlainText(_translate("MainWindow", "Informations about methods"))
         self.comboBox_2.setItemText(0, _translate("MainWindow", "Sélection du chromosome"))
         self.comboBox.setItemText(0, _translate("MainWindow", "Sélection de la mutation"))
         self.plainTextEdit_2.setPlainText(_translate("MainWindow", "a\n"
