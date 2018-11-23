@@ -2,11 +2,12 @@
 #!/usr/bin/env python3
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-import main_window
+from PyQt5 import QtCore, QtWidgets
+from main_window import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        
         
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(673, 486)
@@ -22,6 +23,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+    
+        
+        #Création des items de la liste déroulante des différentes méthodes
         self.comboBox_3 = QtWidgets.QComboBox(self.centralWidget)
         global comboBox_3
         self.comboBox_3.setObjectName("comboBox_3")
@@ -29,15 +33,30 @@ class Ui_MainWindow(object):
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
     
         
         self.verticalLayout_3.addWidget(self.comboBox_3)
+        #Création de l'espace d'information des différentes méthodes de la liste
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralWidget)
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.verticalLayout_3.addWidget(self.plainTextEdit)
+        
+        
         self.comboBox_2 = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox_2.setObjectName("comboBox_2")
-        self.comboBox_2.addItem("")
+        
+        #self. createItemsList()
+        
+        self.createItemsList()
+        
+        
+        
+        
+        
+        
+        
+        
         self.verticalLayout_3.addWidget(self.comboBox_2)
         self.comboBox = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox.setObjectName("comboBox")
@@ -121,10 +140,11 @@ class Ui_MainWindow(object):
         
         self.actionNouveau_fichier.triggered.connect(self.on_actionOuvrir_triggered)
         
-        #chromosome_ref=self.on_actionOuvrir_triggered()
         
         
-        self.pushButton.clicked.connect(self.plot_mutation_par_chromosome)
+        #Connection Lauch -> méthode
+        self.pushButton.clicked.connect(self.Launcher)
+        
         
         #self.pushButton.clicked.connect( )
         
@@ -176,69 +196,37 @@ class Ui_MainWindow(object):
         self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation "))
         self.comboBox_3.activated[int].connect(self.updateText)
-        self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation in a choosen Chromosome "))
+        self.comboBox_3.setItemText(5, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation in a choosen Chromosome "))
         self.comboBox_3.activated[int].connect(self.updateText)
         
-        
-        
-        
-        #self.comboBox_3.setItemText(3, _translate("MainWindow", "Position chromosome sur une graphique"))
-        
-
-        
-            
-        
-        
-        
-        self.plainTextEdit.setPlainText(_translate("MainWindow", "Informations about methods"))
+        self.plainTextEdit.setPlainText(_translate("MainWindow", "Open file before launch any function\nThis section provide informations about choosen method\nDont forget to read every parameter the function need"))
         self.comboBox_2.setItemText(0, _translate("MainWindow", "Sélection du chromosome"))
         self.comboBox.setItemText(0, _translate("MainWindow", "Sélection de la mutation"))
-        self.plainTextEdit_2.setPlainText(_translate("MainWindow", "a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"\n"
-"a\n"
-"aa\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-"a\n"
-""))
-        self.checkBox.setText(_translate("MainWindow", "qualité"))
-        self.checkBox_2.setText(_translate("MainWindow", "position"))
+        
+        self.plainTextEdit_2.setPlainText(_translate("MainWindow", "a\n"))
+        
+        
+        self.checkBox.setText(_translate("MainWindow", "Quality"))
+        self.checkBox_2.setText(_translate("MainWindow", "Position"))
         
         self.pushButton.setText(_translate("MainWindow", "Launch"))
         
         
-        self.menuFichier.setTitle(_translate("MainWindow", "Fichier"))
+        self.menuFichier.setTitle(_translate("MainWindow", "File"))
         self.menuEdition.setTitle(_translate("MainWindow", "Edition"))
-        self.menuFen_tre.setTitle(_translate("MainWindow", "Fenêtre"))
-        self.menuAide.setTitle(_translate("MainWindow", "Aide"))
-        self.actionNouveau_fichier.setText(_translate("MainWindow", "Nouveau fichier"))
-        self.actionSauvegarder.setText(_translate("MainWindow", "Sauvegarder"))
+        self.menuFen_tre.setTitle(_translate("MainWindow", "Window"))
+        self.menuAide.setTitle(_translate("MainWindow", "Help"))
+        self.actionNouveau_fichier.setText(_translate("MainWindow", "New file"))
+        self.actionSauvegarder.setText(_translate("MainWindow", "Save"))
         self.actionCopier.setText(_translate("MainWindow", "Copier"))
         self.actionCopier.setShortcut(_translate("MainWindow", "Ctrl+C"))
         self.actionColler.setText(_translate("MainWindow", "Coller"))
         self.actionColler.setShortcut(_translate("MainWindow", "Ctrl+V"))
-        self.actionSupprimer.setText(_translate("MainWindow", "Retour en arrière"))
+        self.actionSupprimer.setText(_translate("MainWindow", "Back"))
         self.actionSupprimer.setShortcut(_translate("MainWindow", "Ctrl+Z"))
         self.actionFull_screen.setText(_translate("MainWindow", "Full screen"))
         self.actionFull_screen.setShortcut(_translate("MainWindow", "F11"))
-        self.actionA_propos.setText(_translate("MainWindow", "A propos"))
+        self.actionA_propos.setText(_translate("MainWindow", "About"))
         self.actionSignaler_un_bug.setText(_translate("MainWindow", "Signaler un bug "))
         
 if __name__ == "__main__":
