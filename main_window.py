@@ -13,14 +13,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         qApp.installEventFilter(self)
         self.setupUi(self)
         self.chromosome_ref={}
-        #self.comboBox_3=comboBox()
         self.show()
         
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
         (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"Nouveau_fichier",  filter="vcf(*.vcf)")
-        
-
         if nomFichier:
             QMessageBox.information(self,"TRACE", "Fichier à ouvrir:\n\n%s"%nomFichier)
             with open(nomFichier,"r") as vcf:
@@ -29,7 +26,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             for line_vcf in file_read:
                 if not line_vcf.startswith("#"):#si la ligne ne commence pas par # -> lecture de la ligne
                     information=re.findall("\S+",line_vcf)
-                    #Instruction permettant de valider la présence d'informations pour chaque ligne
+                    #Instruction permettant de valider la présence d'informations pour chaque ligne, sinon remplit par ?
                     if len(information)>0:
                         chromosome=information[0]
                     if len(information)==0:
@@ -44,7 +41,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                         alt=information[4]
                     if len(information)>5:
                         qual=information[5]
-                    
                         liste_mutation=[]
                         if chromosome in self.chromosome_ref:
                             if position in self.chromosome_ref[chromosome].keys():
@@ -64,9 +60,19 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                             liste_mutation.append(qual)
                             self.chromosome_ref[chromosome]={}
                             self.chromosome_ref[chromosome][position]=liste_mutation
+                            
+    def compteur_chromosome(self):
+        compteur_chromosome=0
+        for i in self.chromosome_ref:
+            compteur_chromosome=compteur_chromosome+1
+        return(str(compteur_chromosome))
+        
+    def createItemsList(self):        
+        for i in self.chromosome_ref:
+                return self.comboBox_2.addItem()
+        
         
     def nombre_mutation_total(self):
-        
         liste_chromosome_nb_mutation=[]
         liste_mutation=[]
         liste_chromosome=[]
@@ -112,21 +118,16 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         plt.ylabel('Nombre de Mutation')
         plt.show()
         
-    def compteur_chromosome(self):
-        compteur=0
-        for i in self.chromosome_ref:
-            compteur=compteur+1
-        print ("il y a ", compteur,"chromosomes")
         
     @pyqtSlot()
     def on_actionQuitter_triggered(self):
         self.close()
     def closeEvent(self,event):
-        messageConfirmation = "Êtes-vous sûr de vouloir quitter VCF-VS ?"
+        messageConfirmation = "Are you sure you want to quit ?"
         reponse = QMessageBox.question(self,"Confirmation",messageConfirmation,QMessageBox.Yes,QMessageBox.No)
         if reponse == QMessageBox.Yes:
             event.accept()
-            message="Très bien j'espère vous avoir été utile"
+            message="Hope it was usefull"
             reponse1=QMessageBox.question(self, "Confirmation", message, QMessageBox.Yes)
         else:
             event.ignore()
@@ -135,7 +136,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def updateText(self, message):
         self.plainTextEdit.clear()
         if self.comboBox_3.currentIndex()==0:
-                message="Informations about methods"
+                message="Open file before launch any function\nThis section provide informations about choosen method\nDont forget to read every parameter the function need"
                 self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==1:
             message="Function which calcul the current number of Chromosome in the current vcf file \nType= Text"
@@ -149,3 +150,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if self.comboBox_3.currentIndex()==4:
                 message="Graphs of the current number of chromosome mutation in the current Chromosome \nType= Graph"
                 self.plainTextEdit.setPlainText(message )
+    
+    #Méthode permettant de connection de la comboBox au Launcher et de lancer la bonne méthode
+    def Launcher(self):
+        if self.comboBox_3.currentIndex()==1:
+            self.plainTextEdit_2.clear()
+            self.plainTextEdit_2.setPlainText("Current file contain "+self.compteur_chromosome() +" Chromosomes")
+            
+        if self.comboBox_3.currentIndex()==2:
+            self.plot_mutation_par_chromosome()
+            
+
+   
