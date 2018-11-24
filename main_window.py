@@ -11,10 +11,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
         super(MainWindow,self).__init__(parent)
         qApp.installEventFilter(self)
-        self.setupUi(self)
         self.chromosome_ref={}
+        self.setupUi(self)
         self.show()
-        
+    
+    def createItemsList(self, i):        
+        return (self.comboBox_2.addItem(i))
+    
+    
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
         (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"Nouveau_fichier",  filter="vcf(*.vcf)")
@@ -60,17 +64,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                             liste_mutation.append(qual)
                             self.chromosome_ref[chromosome]={}
                             self.chromosome_ref[chromosome][position]=liste_mutation
-                            
+            #
+            for i in self.chromosome_ref:
+                self.createItemsList(i)
+      
     def compteur_chromosome(self):
         compteur_chromosome=0
         for i in self.chromosome_ref:
             compteur_chromosome=compteur_chromosome+1
         return(str(compteur_chromosome))
-        
-    def createItemsList(self):        
-        for i in self.chromosome_ref:
-                return self.comboBox_2.addItem()
-        
         
     def nombre_mutation_total(self):
         liste_chromosome_nb_mutation=[]
