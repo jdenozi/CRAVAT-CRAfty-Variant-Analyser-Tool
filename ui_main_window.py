@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         
         #self. createItemsList()
         
-        self.createItemsList()
+        
         
         
         
@@ -61,6 +61,8 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
+        
+        
         
         self.verticalLayout_3.addWidget(self.comboBox)
         self.gridLayout.addLayout(self.verticalLayout_3, 0, 0, 1, 2)
