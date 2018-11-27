@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 import sys
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 from main_window import *
 
 class Ui_MainWindow(object):
@@ -23,7 +23,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-    
+        
+        self.setWindowIcon(QtGui.QIcon("Logo_FDS_quadri_fond_blanc.jpg"))
         
         #Création des items de la liste déroulante des différentes méthodes
         self.comboBox_3 = QtWidgets.QComboBox(self.centralWidget)
@@ -45,6 +46,7 @@ class Ui_MainWindow(object):
         
         self.comboBox_2 = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox_2.setObjectName("comboBox_2")
+        self.comboBox_2.addItem("Select Chromosome")
         
         #self. createItemsList()
         
@@ -76,12 +78,17 @@ class Ui_MainWindow(object):
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
+        
+        #Check box pour la qualité
         self.checkBox = QtWidgets.QCheckBox(self.centralWidget)
         self.checkBox.setObjectName("checkBox")
         self.verticalLayout_4.addWidget(self.checkBox)
+        
+        #Check box pour la position
         self.checkBox_2 = QtWidgets.QCheckBox(self.centralWidget)
         self.checkBox_2.setObjectName("checkBox_2")
         self.verticalLayout_4.addWidget(self.checkBox_2)
+        
         self.gridLayout.addLayout(self.verticalLayout_4, 1, 0, 2, 1)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setSpacing(6)
@@ -96,12 +103,17 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setSpacing(6)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        
+        #Line edit de la check box de la position
         self.lineEdit_2 = QtWidgets.QLineEdit(self.centralWidget)
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.horizontalLayout_4.addWidget(self.lineEdit_2)
+        
+        #Line edit de la check box de la qualité
         self.lineEdit = QtWidgets.QLineEdit(self.centralWidget)
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout_4.addWidget(self.lineEdit)
+        
         self.gridLayout.addLayout(self.horizontalLayout_4, 2, 1, 1, 1)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setSpacing(6)
@@ -188,13 +200,13 @@ class Ui_MainWindow(object):
         
         
         #Connect any comboBox with plaintextEdit for refresh the information about the current method
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "CRAVAT(CRAfty Variant Analyser Tool)"))
         self.comboBox_3.setItemText(0, _translate("MainWindow", "Which function do you want to use?"))
         self.comboBox_3.setItemText(1, _translate("MainWindow", "How many Chromosome do file have"))
         self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(2, _translate("MainWindow", "How many mutation do file have"))
         self.comboBox_3.activated[int].connect(self.updateText)
-        self.comboBox_3.setItemText(3, _translate("MainWindow", "How many mutation do chhromosome have"))
+        self.comboBox_3.setItemText(3, _translate("MainWindow", "How many mutation do chromosome have"))
         self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation "))
         self.comboBox_3.activated[int].connect(self.updateText)
@@ -202,8 +214,9 @@ class Ui_MainWindow(object):
         self.comboBox_3.activated[int].connect(self.updateText)
         
         self.plainTextEdit.setPlainText(_translate("MainWindow", "Open file before launch any function\nThis section provide informations about choosen method\nDont forget to read every parameter the function need"))
-        self.comboBox_2.setItemText(0, _translate("MainWindow", "Sélection du chromosome"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Sélection de la mutation"))
+        self.comboBox_2.setItemText(0, _translate("MainWindow", "Select Chromosome"))
+        
+        self.comboBox.setItemText(0, _translate("MainWindow", "Select mutation"))
         
         self.plainTextEdit_2.setPlainText(_translate("MainWindow", "a\n"))
         
