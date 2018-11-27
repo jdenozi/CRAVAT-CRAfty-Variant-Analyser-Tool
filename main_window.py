@@ -16,10 +16,23 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.setupUi(self)
         self.show()
     
-    #permet de mettre à jours la liste déroulante des chromosomes à chaque nouveau fichier
+    #Permet de mettre à jours la liste déroulante des chromosomes à chaque nouveau fichier
     def createItemsList(self, i):        
         return (self.comboBox_2.addItem(i))
     
+    def createItemsListMutation(self,i):
+        return(self.comboBox.addItem(i))
+    
+    #Permet de faire la liste des différentes mutations existant dans le fichier
+    def typeOfMutation(self):
+        differentMutation=[]
+        for chromosome in self.chromosome_ref:
+            for position in self.chromosome_ref[chromosome]:
+                listeInfo=self.chromosome_ref[chromosome].get(position)
+                if listeInfo[1] not in differentMutation:
+                    differentMutation.append(listeInfo[1])
+        return (differentMutation)
+        
     #permet d'ouvrir un fichier avec l'arborescence, créer le dictionnaire de dictionnaire
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
@@ -66,10 +79,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                             liste_mutation.append(qual)
                             self.chromosome_ref[chromosome]={}
                             self.chromosome_ref[chromosome][position]=liste_mutation
-            #
-            for i in self.chromosome_ref:
-                self.createItemsList(i)
-      
+            
+            for chromosome in self.chromosome_ref:
+                self.createItemsList(chromosome)
+                
+            for typeMutation in self.typeOfMutation():
+                self.createItemsListMutation(typeMutation)
+                
+    #Permet de 
     def compteur_chromosome(self):
         compteur_chromosome=0
         for i in self.chromosome_ref:
@@ -228,7 +245,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if reponse == QMessageBox.Yes:
             event.accept()
             message="Hope it was usefull"
-            reponse1=QMessageBox.question(self, "Confirmation", message, QMessageBox.Yes)
+            QMessageBox.question(self, "Confirmation", message, QMessageBox.Yes)
         else:
             event.ignore()
             
