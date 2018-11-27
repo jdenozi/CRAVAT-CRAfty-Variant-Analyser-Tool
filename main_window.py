@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSlot
 
 import re
 import matplotlib.pyplot as plt
+from PIL import Image
 
 class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
@@ -15,10 +16,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.setupUi(self)
         self.show()
     
+    #permet de mettre à jours la liste déroulante des chromosomes à chaque nouveau fichier
     def createItemsList(self, i):        
         return (self.comboBox_2.addItem(i))
     
-    
+    #permet d'ouvrir un fichier avec l'arborescence, créer le dictionnaire de dictionnaire
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
         (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"Nouveau_fichier",  filter="vcf(*.vcf)")
@@ -74,7 +76,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             compteur_chromosome=compteur_chromosome+1
         return(str(compteur_chromosome))
         
-    def nombre_mutation_total(self):
+    #Permet de connaître le nombre de mutation d'un chromosome donnée en paramètre
+    def mutationCounter(self, x):
+        counter=0
+        try:
+            for mutation in self.chromosome_ref.get(x):
+                counter=counter+1
+            return counter
+        except TypeError:
+            message="Please select Chromosome"
+            QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+            
+    def totalMutationCounter(self):
         liste_chromosome_nb_mutation=[]
         liste_mutation=[]
         liste_chromosome=[]
@@ -92,35 +105,120 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         
         
     def plot_mutation_par_chromosome(self):
-        liste_chromosome=[]
-        liste_mutation=[]
-        somme=0
-        moyenne=0
-        #print(self.nombre_mutation_total(chromosome_ref))
-        for chromosome in self.nombre_mutation_total()[0]:
-            liste_chromosome.append(chromosome)
-        for mutation in self.nombre_mutation_total()[1]:
-            liste_mutation.append(mutation)
-            somme=somme+mutation
-        moyenne=somme/len(self.nombre_mutation_total()[1])
-        plt.title("Nombre de mutation par genome")
-        bars=plt.bar(liste_chromosome, liste_mutation)
-        for index,  mutation in enumerate(liste_mutation):
-             if mutation<=(moyenne*(0.8) ):
-                
-                bars[index].set_facecolor("red")
-             elif mutation>=(moyenne*(1.2)):
-              
-                bars[index].set_facecolor("Green")
-             else:
+        try:
+            liste_chromosome=[]
+            liste_mutation=[]
+            somme=0
+            moyenne=0
+            #print(self.nombre_mutation_total(chromosome_ref))
+            for chromosome in self.totalMutationCounter()[0]:
+                liste_chromosome.append(chromosome)
+            for mutation in self.totalMutationCounter()[1]:
+                liste_mutation.append(mutation)
+                somme=somme+mutation
+            moyenne=somme/len(self.totalMutationCounter()[1])
+            plt.title("Nombre de mutation par genome")
+            bars=plt.bar(liste_chromosome, liste_mutation)
+            for index,  mutation in enumerate(liste_mutation):
+                 if mutation<=(moyenne*(0.8) ):
+                    
+                    bars[index].set_facecolor("red")
+                 elif mutation>=(moyenne*(1.2)):
+                  
+                    bars[index].set_facecolor("Green")
+                 else:
 
-                bars[index].set_facecolor("Yellow")
+                    bars[index].set_facecolor("Yellow")
+        
+            plt.xlabel("Chromosome")
+            plt.ylabel('Nombre de Mutation')
+            plt.show()
+        except ZeroDivisionError:
+            message="Please, open file"
+            QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+            
+    #Fonction 
+    def dynamicPlot(self, chromosome):
     
-        plt.xlabel("Chromosome")
-        plt.ylabel('Nombre de Mutation')
-        plt.show()
         
-        
+        if type(chromosome)==str:#Récupère le paramètre, le fais devenir une var type str si c'est un int
+            try:
+                positionLoop=self.chromosome_ref[chromosome]
+                liste_position=[]
+                mutation=[]
+                liste_ref_mutation=[]
+                liste_insert_mutation=[]
+                
+                for position in self.chromosome_ref[chromosome]: #boucle sur les différentes positions de la clé chromosome passer en paramètre dans la fonction
+                    liste_position.append(position)#création d'une liste comprenant toutes les positions de la clé
+                    mut=(self.chromosome_ref[chromosome].get(position))
+                    mutation.append(mut)
+                    liste_ref_mutation.append(mut[0])
+                    liste_insert_mutation.append(mut[1])
+                    
+                    #Générateur permettant de parcourir les valeurs de la première clé, et récupérer la variable à partir de l'indice lorsque l'indice est égale à
+                    #la taille total du nombre de valeur de la premiere clé
+                def valueIt(x):
+                    j=0
+                    for i in x:
+                        j=j+1
+                        if j==len(x):
+                            yield i #ici yield renvois i, qui correspond à la dernière valeur de la premiere clé, sous python 3 les dictionnaires garde
+                                #leur ordre d'entrée, donc la derniere valeur correspond à la position la plus élevé
+                        
+                for i in valueIt(positionLoop):#Récupère la derniere valeurs de la liste avec le générateur
+                    last=int(i)
+                liste_position_percent=[]
+                liste_values=[]
+                
+                for i in liste_position:
+                    j=(int(i)*100)/int(last)
+                    liste_position_percent.append(j)
+                    liste_values.append(1)
+                
+                x=liste_position_percent
+                y=liste_values
+                
+                position=liste_position
+                fig,ax = plt.subplots()
+                ax.get_xaxis().set_visible(False)
+                ax.get_yaxis().set_visible(False)
+                ax.set_title("Répartition des mutations sur le chromosomes "+chromosome, size=13, color='Black', style='normal')
+                #Taile des points 10, couleur noir
+                point= plt.scatter(x,y,color="black",  s=10)
+                #De base les annotations ne sont pas visibiles
+                annot = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",bbox=dict(boxstyle="round", fc="w"),arrowprops=dict(arrowstyle="->"))
+                annot.set_visible(False)
+                ax.legend(["Nombre de mutation: "+str(len(liste_position))+"\nNombre estimé de nucléotides: "+str(last)+"\nPourcentage de nucléotide mutant: "+str(len(liste_position)/last)]).draggable()
+
+                #Rajouter la liste des types de mutations pour avoir en label la mutation et son type
+                def update_annot(ind):
+                    pos = point.get_offsets()[ind["ind"][0]]
+                    annot.xy = pos
+                    information = "Mutation:{},Insertion:{},Position:{}".format(",".join([liste_ref_mutation[n] for n in ind["ind"]]),",".join([liste_insert_mutation[n] for n in ind["ind"]]), ",".join([position[n] for n in ind["ind"]]))
+                    annot.set_text(information)
+                    
+                def hover(event):
+                    vis = annot.get_visible()
+                    if event.inaxes == ax:
+                        cont, ind = point.contains(event)
+                        if cont:
+                            update_annot(ind)
+                            annot.set_visible(True)
+                            fig.canvas.draw_idle()
+                        else:
+                            if vis:
+                                annot.set_visible(False)
+                                fig.canvas.draw_idle()
+                                
+                fig.canvas.mpl_connect("motion_notify_event", hover)
+                img=Image.open("blanc.png")
+                plt.imshow(img, zorder=0,  extent=[0.1, 105.0, -1.0, 3.0])
+                plt.show()
+            except KeyError:
+                 message="Please select Chromosome & open file"
+                 QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+                 
     @pyqtSlot()
     def on_actionQuitter_triggered(self):
         self.close()
@@ -155,12 +253,19 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     
     #Méthode permettant de connection de la comboBox au Launcher et de lancer la bonne méthode
     def Launcher(self):
+        
         if self.comboBox_3.currentIndex()==1:
             self.plainTextEdit_2.clear()
             self.plainTextEdit_2.setPlainText("Current file contain "+self.compteur_chromosome() +" Chromosomes")
             
         if self.comboBox_3.currentIndex()==2:
-            self.plot_mutation_par_chromosome()
+            chromosome=self.comboBox_2.currentText()
+            self.plainTextEdit_2.setPlainText("Current chromosome contain "+str(self.mutationCounter(chromosome)) +" mutations")
             
-
-   
+        if self.comboBox_3.currentIndex()==3:
+            self.plot_mutation_par_chromosome()
+        
+        if self.comboBox_3.currentIndex()==4:
+            chromosome=self.comboBox_2.currentText()
+            self.dynamicPlot(chromosome)
+            
