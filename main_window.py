@@ -153,6 +153,31 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         except ZeroDivisionError:
             message="Please, open file"
             QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+
+    def mutationCounterPerChromosome(self):
+        mutationCounter={}
+        mutation=self.comboBox.currentText()
+        qual1=self.lineEdit_3.selectedText()
+        qual2=self.lineEdit_4.selectedText()
+        pos1=self.lineEdit.selectedText()
+        pos2=self.lineEdit_2.selectedText()
+        print(pos2)
+        try:
+            for position in self.chromosome_ref[chromosome]:
+                if int(position)>=int(pos1) and int(position)<=int(pos2):
+                    listInfo=chromosome_ref[chromosome].get(position)
+                    if int(listInfo[2])>=int(qual1) and int(listInfo[2])<=int(qual2):
+                        if listInfo[1] in mutationCounter:
+                            mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                        else:
+                            mutationCounter[listInfo[1]]=1
+                    else:
+                        continue
+                else:
+                    continue
+        except:
+            print("L'intervalle n'est pas valide ")
+        self.plainTextEdit_2.setPlainText(str(mutationCounter))
             
     #Fonction 
     def dynamicPlot(self, chromosome):
@@ -259,14 +284,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             message="Function which calcul the current number of Chromosome in the current vcf file \nType= Text"
             self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==2:
-                message="Function which calcul the current number of Chromosome mutation in the current vcf file \nType=text"
-                self.plainTextEdit.setPlainText(message )
+            message="Function which calcul the current number of Chromosome mutation in the current vcf file \nType=text"
+            self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==3:
-                message="Graphs of the current number of chromosome mutation in the current vcf file \nType= Graph\nColor code mean that the number of mutation is above or behind the average Chromosome of the entire file"
-                self.plainTextEdit.setPlainText(message )
+            message="Graphs of the current number of chromosome mutation in the current vcf file \nType= Graph\nColor code mean that the number of mutation is above or behind the average Chromosome of the entire file"
+            self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==4:
-                message="Graphs of the current number of chromosome mutation in the current Chromosome \nType= Graph"
-                self.plainTextEdit.setPlainText(message )
+            message="Graphs of the current number of chromosome mutation in the current Chromosome \nType= Graph"
+            self.plainTextEdit.setPlainText(message )
+        if  self.comboBox_3.currentIndex()==5:
+            message="Dynamic graph"
+            self.plainTextEdit.setPlainText(message) 
+        if  self.comboBox_3.currentIndex()==6:
+            message="Function which calcul the number of a type of mutation, with parameter :quality & position"
+            self.plainTextEdit.setPlainText(message)
     
     #Méthode permettant de connection de la comboBox au Launcher et de lancer la bonne méthode
     def Launcher(self):
@@ -285,4 +316,5 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if self.comboBox_3.currentIndex()==4:
             chromosome=self.comboBox_2.currentText()
             self.dynamicPlot(chromosome)
-            
+        if self.comboBox_3.currentIndex()==6:
+            self.plainTextEdit_2.setPlainText(str(self.mutationCounterPerChromosome()))
