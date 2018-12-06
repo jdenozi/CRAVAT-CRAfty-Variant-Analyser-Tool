@@ -156,17 +156,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
     def mutationCounterPerChromosome(self):
         mutationCounter={}
-        mutation=self.comboBox.currentText()
-        qual1=self.lineEdit_3.selectedText()
-        qual2=self.lineEdit_4.selectedText()
-        pos1=self.lineEdit.selectedText()
-        pos2=self.lineEdit_2.selectedText()
-        print(pos2)
-        try:
+        chromosome=self.comboBox_2.currentText()
+        qual1=self.lineEdit_3.text()
+        qual2=self.lineEdit_4.text()
+        pos2=self.lineEdit.text()
+        pos1=self.lineEdit_2.text()
+        print(chromosome,"qual1",qual1,"qual2",qual2,"pos1",pos1,"pos2",pos2)
+        try: 
             for position in self.chromosome_ref[chromosome]:
-                if int(position)>=int(pos1) and int(position)<=int(pos2):
-                    listInfo=chromosome_ref[chromosome].get(position)
-                    if int(listInfo[2])>=int(qual1) and int(listInfo[2])<=int(qual2):
+                if float(position)>=float(pos1) and float(position)<=float(pos2):
+                    listInfo=self.chromosome_ref[chromosome].get(position)
+                    if float(listInfo[2])>=float(qual1) and float(listInfo[2])<=float(qual2):
                         if listInfo[1] in mutationCounter:
                             mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
                         else:
@@ -175,10 +175,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                         continue
                 else:
                     continue
+            self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
+            for mutation in mutationCounter:
+                message=self.plainTextEdit_2.toPlainText()+str(mutation)+str(mutationCounter[mutation])+"\n"
+                
+                self.plainTextEdit_2.setPlainText(message)
         except:
-            print("L'intervalle n'est pas valide ")
-        self.plainTextEdit_2.setPlainText(str(mutationCounter))
-            
+            message="Please, enter the right interval"
+            QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+ 
+
+
     #Fonction 
     def dynamicPlot(self, chromosome):
     
@@ -317,4 +324,4 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             chromosome=self.comboBox_2.currentText()
             self.dynamicPlot(chromosome)
         if self.comboBox_3.currentIndex()==6:
-            self.plainTextEdit_2.setPlainText(str(self.mutationCounterPerChromosome()))
+            self.mutationCounterPerChromosome()
