@@ -35,7 +35,11 @@ class Ui_MainWindow(object):
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
-    
+        self.comboBox_3.addItem("")
+ 
+        self.comboBox_3.addItem("")
+
+            
         
         self.verticalLayout_3.addWidget(self.comboBox_3)
         #Création de l'espace d'information des différentes méthodes de la liste
@@ -212,6 +216,10 @@ class Ui_MainWindow(object):
         self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(5, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation in a choosen Chromosome "))
         self.comboBox_3.activated[int].connect(self.updateText)
+         
+        self.comboBox_3.setItemText(6, _translate("MainWindow", "Mutation filter with quality and interval position "))
+        self.comboBox_3.activated[int].connect(self.updateText)
+        
         
         self.plainTextEdit.setPlainText(_translate("MainWindow", "Open file before launch any function\nThis section provide informations about choosen method\nDont forget to read every parameter the function need"))
         self.comboBox_2.setItemText(0, _translate("MainWindow", "Select Chromosome"))
