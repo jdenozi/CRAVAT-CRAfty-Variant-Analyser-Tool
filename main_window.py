@@ -26,6 +26,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #Permet de faire la liste des différentes mutations existant dans le fichier
     def typeOfMutation(self):
         differentMutation=[]
+        differentMutation.clear()
+        
         for chromosome in self.chromosome_ref:
             for position in self.chromosome_ref[chromosome]:
                 listeInfo=self.chromosome_ref[chromosome].get(position)
@@ -33,10 +35,30 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     differentMutation.append(listeInfo[1])
         return (differentMutation)
         
-    #permet d'ouvrir un fichier avec l'arborescence, créer le dictionnaire de dictionnaire
+    #permet d'ouvrir un fichier avec l'arborescence(filtre sur le type de fichier), créer le dictionnaire de dictionnaire
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
         (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"Nouveau_fichier",  filter="vcf(*.vcf)")
+        #met à jours les listes déroulantes, en supprimants les anciens éléments
+        if self.comboBox_2.count()>1 :
+            numberOfItemsList=self.comboBox_2.count()
+            numberOfItemsListMutation=self.comboBox.count()
+            item=0
+            itembis=1
+            while item<numberOfItemsList:
+                self.comboBox_2.removeItem(itembis)
+                item=item+1
+            item = 0
+            itembis = 1
+            while item<numberOfItemsListMutation:
+                self.comboBox.removeItem(itembis)
+                item=item+1
+        else:
+            pass
+
+
+        self.chromosome_ref.clear()
+        
         if nomFichier:
             QMessageBox.information(self,"TRACE", "Fichier à ouvrir:\n\n%s"%nomFichier)
             with open(nomFichier,"r") as vcf:
@@ -79,7 +101,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                             liste_mutation.append(qual)
                             self.chromosome_ref[chromosome]={}
                             self.chromosome_ref[chromosome][position]=liste_mutation
-            
+        
             for chromosome in self.chromosome_ref:
                 self.createItemsList(chromosome)
                 
@@ -177,7 +199,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     continue
             self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
             for mutation in mutationCounter:
-                message=self.plainTextEdit_2.toPlainText()+str(mutation)+str(mutationCounter[mutation])+"\n"
+                message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
                 
                 self.plainTextEdit_2.setPlainText(message)
         except:
