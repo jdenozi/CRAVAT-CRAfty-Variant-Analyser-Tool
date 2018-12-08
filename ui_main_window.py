@@ -35,50 +35,37 @@ class Ui_MainWindow(object):
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
-        self.comboBox_3.addItem("")
- 
-        self.comboBox_3.addItem("")
-
-            
-        
+        self.comboBox_3.addItem("") 
+        self.comboBox_3.addItem("") 
         self.verticalLayout_3.addWidget(self.comboBox_3)
+
         #Création de l'espace d'information des différentes méthodes de la liste
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralWidget)
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.verticalLayout_3.addWidget(self.plainTextEdit)
         
-        
+        #Creation de la liste déroulante des chromosomes
         self.comboBox_2 = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("Select Chromosome")
-        
-        #self. createItemsList()
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         self.verticalLayout_3.addWidget(self.comboBox_2)
+
+        #Création liste déroulante des mutatations
         self.comboBox = QtWidgets.QComboBox(self.centralWidget)
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
-        
-        
-        
         self.verticalLayout_3.addWidget(self.comboBox)
+
         self.gridLayout.addLayout(self.verticalLayout_3, 0, 0, 1, 2)
-        
         self.plainTextEdit_2 = QtWidgets.QPlainTextEdit(self.centralWidget)
         self.plainTextEdit_2.setObjectName("plainTextEdit_2")
-        
-        
-        
-        self.gridLayout.addWidget(self.plainTextEdit_2, 0, 2, 4, 1)
+         
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralWidget)
+        self.pushButton_2.setObjectName("pushButton_2")
+       
+        self.gridLayout.addWidget(self.pushButton_2,2.5,2, 4, 1)
+
+        self.gridLayout.addWidget(self.plainTextEdit_2, 0, 2, 3, 1)
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -97,6 +84,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setSpacing(6)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+
+        #Line edit de la check box de la qualité
         self.lineEdit_3 = QtWidgets.QLineEdit(self.centralWidget)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.horizontalLayout_5.addWidget(self.lineEdit_3)
@@ -164,7 +153,7 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.Launcher)
         
         
-        #self.pushButton.clicked.connect( )
+        self.pushButton_2.clicked.connect(self.Clear )
         
         
         self.actionSauvegarder = QtWidgets.QAction(MainWindow)
@@ -233,7 +222,7 @@ class Ui_MainWindow(object):
         self.checkBox_2.setText(_translate("MainWindow", "Position"))
         
         self.pushButton.setText(_translate("MainWindow", "Launch"))
-        
+        self.pushButton_2.setText(_translate("MainWindow","Clear"))
         
         self.menuFichier.setTitle(_translate("MainWindow", "File"))
         self.menuEdition.setTitle(_translate("MainWindow", "Edition"))
