@@ -332,7 +332,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def Launcher(self):
         
         if self.comboBox_3.currentIndex()==1:
-            self.plainTextEdit_2.clear()
             self.plainTextEdit_2.setPlainText("Current file contain "+self.compteur_chromosome() +" Chromosomes")
             
         if self.comboBox_3.currentIndex()==2:
@@ -347,3 +346,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.dynamicPlot(chromosome)
         if self.comboBox_3.currentIndex()==6:
             self.mutationCounterPerChromosome()
+
+    def Clear(self):
+        self.plainTextEdit_2.clear()
