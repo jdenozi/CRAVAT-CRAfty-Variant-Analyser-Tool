@@ -4,11 +4,11 @@ The CRAVAT project is a program designed for working with VCF file (only). The a
 
 This toolset can be used to perform the following operations on VCF files:
 
-    Filter out specific Chromosome
-    Compare files
-    Summarize variants
-    Filter out 
-    Filter out specifiquely with quality and position
+    - Filter out specific Chromosome
+    - Compare files
+    - Summarize variants
+    - Filter out 
+    - Filter out specifiquely with quality and position
 
 
 
@@ -33,7 +33,7 @@ Dependencies
 - Qt, see https://www.qt.io/ 
   This package is only used in GUI. It's a cross-platform application framework and widget toolkit for creating classic and embedded graphical user interfaces, and applications that run on various software and hardware platforms with little or no change in the underlying codebase, while still being a native application with native capabilities and speed.
 
--Pillow, see https://pillow.readthedocs.io/en/5.3.x/
+- Pillow, see https://pillow.readthedocs.io/en/5.3.x/
 
 Installation
 ============
