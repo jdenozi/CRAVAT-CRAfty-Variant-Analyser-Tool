@@ -147,7 +147,7 @@ class Ui_MainWindow(object):
         
         self.actionNouveau_fichier.triggered.connect(self.on_actionOuvrir_triggered)
         
-        
+
         
         #Connection Lauch -> méthode
         self.pushButton.clicked.connect(self.Launcher)
