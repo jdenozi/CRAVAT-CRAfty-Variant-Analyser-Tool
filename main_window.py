@@ -1,13 +1,26 @@
-#Main window
+#!/bin/env python3
 # -*- coding: utf-8 -*-
+
+'''
+CRAVAT: crafty variant analyser tool
+
+The file contain all the graphical methods connected to the data analysis method
+'''
+
+
+#LIBRARY
+import os
 from PyQt5.QtWidgets import *
 from ui_main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot
-
 import re
 import matplotlib.pyplot as plt
 from PIL import Image
 
+"""
+Déclaration of the class main window
+contains all connections between graphical object and data analysis method
+"""
 class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
         super(MainWindow,self).__init__(parent)
@@ -15,15 +28,13 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.chromosome_ref={}
         self.setupUi(self)
         self.show()
-    
-    #Permet de mettre à jours la liste déroulante des chromosomes à chaque nouveau fichier
+   #Updated from the drop-down list of chromosomes/mutations to each new file 
     def createItemsList(self, i):        
         return (self.comboBox_2.addItem(i))
     
     def createItemsListMutation(self,i):
         return(self.comboBox.addItem(i))
-    
-    #Permet de faire la liste des différentes mutations existant dans le fichier
+   #Création of the list of the different mutations 
     def typeOfMutation(self):
         differentMutation=[]
         differentMutation.clear()
@@ -34,12 +45,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 if listeInfo[1] not in differentMutation:
                     differentMutation.append(listeInfo[1])
         return (differentMutation)
-        
-    #permet d'ouvrir un fichier avec l'arborescence(filtre sur le type de fichier), créer le dictionnaire de dictionnaire
+    """
+    Open the file tree with a filter on the VCF file
+    Creation of the chromosome dictionnary, containing a position dictionnary
+    with the value of a list containing
+    """
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
         (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"Nouveau_fichier",  filter="vcf(*.vcf)")
-        #met à jours les listes déroulantes, en supprimants les anciens éléments
+        #Updated old items from each drop-down list when a new file is opened
         if self.comboBox_2.count()>1 :
             numberOfItemsList=self.comboBox_2.count()
             numberOfItemsListMutation=self.comboBox.count()
@@ -55,19 +69,25 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 item=item+1
         else:
             pass
-
-
         self.chromosome_ref.clear()
-        
+        #Message error if the file is empty
+        if os.path.getsize(nomFichier)==0:
+            message="Sorry, the file seems corrupted. Check the status of the file. It seems to be empty"
+            QMessageBox.question(self, "File corrupted",message)
+
         if nomFichier:
             QMessageBox.information(self,"TRACE", "Fichier à ouvrir:\n\n%s"%nomFichier)
             with open(nomFichier,"r") as vcf:
                 file_read=vcf.readlines()
-            #Boucle sur le fichier vcf
+            #Reading the VCF file and creating the dictionary
             for line_vcf in file_read:
-                if not line_vcf.startswith("#"):#si la ligne ne commence pas par # -> lecture de la ligne
+                #Read lines only after the header
+                if not line_vcf.startswith("#"):
                     information=re.findall("\S+",line_vcf)
-                    #Instruction permettant de valider la présence d'informations pour chaque ligne, sinon remplit par ?
+                    """
+                    Instruction filling variables with a ?
+                    if the file isnt correct
+                    """
                     if len(information)>0:
                         chromosome=information[0]
                     if len(information)==0:
@@ -101,21 +121,26 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                             liste_mutation.append(qual)
                             self.chromosome_ref[chromosome]={}
                             self.chromosome_ref[chromosome][position]=liste_mutation
-        
+            #Message error, if there is no line after header
+            if bool(self.chromosome_ref)==False:
+                    message="Sorry, the file seems corrupted. Check the status of the file. It seems to have header but no data"
+                    QMessageBox.question(self, "File corrupted",message)
+
+            #Creation of drop-down lists 
             for chromosome in self.chromosome_ref:
                 self.createItemsList(chromosome)
                 
             for typeMutation in self.typeOfMutation():
                 self.createItemsListMutation(typeMutation)
                 
-    #Permet de 
+    #Count every chrosomome in current file
     def compteur_chromosome(self):
         compteur_chromosome=0
         for i in self.chromosome_ref:
             compteur_chromosome=compteur_chromosome+1
         return(str(compteur_chromosome))
         
-    #Permet de connaître le nombre de mutation d'un chromosome donnée en paramètre
+    #Count every mutation in current file
     def mutationCounter(self, x):
         counter=0
         try:
@@ -130,33 +155,30 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         liste_chromosome_nb_mutation=[]
         liste_mutation=[]
         liste_chromosome=[]
-       #parcours des clé du dictionnaire
         for chromosome in self.chromosome_ref:
             compteur_mutation=0
-            #parcours des clé du dictionnaire de dictionnaire
             for position in self.chromosome_ref.get(chromosome):
-                compteur_mutation=compteur_mutation+1 # compteur pour chaque mutation de l'intégralité du dictionnaire de dictionnaire
+                compteur_mutation=compteur_mutation+1
             liste_chromosome_nb_mutation.append("Chromosome: "+str(chromosome)+" Nombre de mutation: "+str(compteur_mutation))
             liste_chromosome.append(chromosome)
             liste_mutation.append(compteur_mutation)
-            #print(compteur_mutation)
+            
         return (liste_chromosome, liste_mutation)
         
-        
+    #Graph which contains the number of mutation for each chromosome
     def plot_mutation_par_chromosome(self):
         try:
             liste_chromosome=[]
             liste_mutation=[]
             somme=0
             moyenne=0
-            #print(self.nombre_mutation_total(chromosome_ref))
             for chromosome in self.totalMutationCounter()[0]:
                 liste_chromosome.append(chromosome)
             for mutation in self.totalMutationCounter()[1]:
                 liste_mutation.append(mutation)
                 somme=somme+mutation
             moyenne=somme/len(self.totalMutationCounter()[1])
-            plt.title("Nombre de mutation par genome")
+            plt.title("Number of mutation per Chromosome")
             bars=plt.bar(liste_chromosome, liste_mutation)
             for index,  mutation in enumerate(liste_mutation):
                  if mutation<=(moyenne*(0.8) ):
@@ -183,29 +205,110 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         qual2=self.lineEdit_4.text()
         pos2=self.lineEdit.text()
         pos1=self.lineEdit_2.text()
-        print(chromosome,"qual1",qual1,"qual2",qual2,"pos1",pos1,"pos2",pos2)
-        try: 
-            for position in self.chromosome_ref[chromosome]:
-                if float(position)>=float(pos1) and float(position)<=float(pos2):
-                    listInfo=self.chromosome_ref[chromosome].get(position)
-                    if float(listInfo[2])>=float(qual1) and float(listInfo[2])<=float(qual2):
-                        if listInfo[1] in mutationCounter:
-                            mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+        if self.checkBox.checkState()==True and self.checkBox_2.checkState()==True:
+            try: 
+                for position in self.chromosome_ref[chromosome]:
+                    try:
+                        if float(position)>=float(pos1) and float(position)<=float(pos2):
+                            listInfo=self.chromosome_ref[chromosome].get(position)
+                            try:
+                                if float(listInfo[2])>=float(qual1) and float(listInfo[2])<=float(qual2):
+                                    if listInfo[1] in mutationCounter:
+                                        mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                                    else:
+                                        mutationCounter[listInfo[1]]=1
+                                else:
+                                    continue
+                            except:
+                                message="Please, enter the quality"
+                                QMessageBox.question(self,"Error", message, QMessageBox.yes)
                         else:
-                            mutationCounter[listInfo[1]]=1
-                    else:
-                        continue
-                else:
-                    continue
-            self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
-            for mutation in mutationCounter:
-                message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                            continue
+                    except:
+                        message="Please, enter position"
+                        QMessageBox.question(self, "Error", message,QMessageBox.Yes)
+
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
+                for mutation in mutationCounter:
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                    
+                    self.plainTextEdit_2.setPlainText(message)
+            except:
+                message="Please, enter the right interval or right quality"
+                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+
+        if self.checkBox_2.checkState()==True and self.checkBox.checkState()==False:
+            try:
+                for position in self.chromosome_ref[chromosome]:
+                    try:
+                         if float(position)>=float(pos1) and float(position)<=float(pos2):
+                            listInfo=self.chromosome_ref[chromosome].get(position)
+                            if listInfo[1] in mutationCounter:
+                                mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                            else:
+                                mutationCounter[listInfo[1]]=1
+                         else:
+                            continue
+                    except:
+                        message="Please, select position"
+                        QMessageBox.question(self,"Error", message, QMessageBox.Yes)
+
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
+                for mutation in mutationCounter:
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                    
+                    self.plainTextEdit_2.setPlainText(message)
+            except:
+                message="Please, select Chromosome"
+                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+
+        if self.checkBox_2.checkState()==False and self.checkBox.checkState()==True:
+            try:
+                for position in self.chromosome_ref[chromosome]:
+                    listInfo=self.chromosome_ref[chromosome].get(position)
+                    try:
+                        if float(listeInfo[2])>=float(qual1) and float(listeInfo[2])<=float(qual2):
+                            if listInfo[1] in mutationCounter:
+                                mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                            else:
+                                mutationCounter[listInfo[1]]=1
+                        else:
+                            continue
+                    
+                    except:
+                        message="Please, enter quality"
+                        QMessageBox.question(self, "Error", message, QMessageBox.Yes)
                 
-                self.plainTextEdit_2.setPlainText(message)
-        except:
-            message="Please, enter the right interval"
-            QMessageBox.question(self,"Error",message,QMessageBox.Yes)
- 
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :"+chromosome+"\n"+"######### \n")
+                for mutation in mutationCounter:
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                    
+                    self.plainTextEdit_2.setPlainText(message)
+            except:
+                message="Please, select Chromosome"
+                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+
+        if self.checkBox_2.checkState()==False and self.checkBox.checkState()==False:
+            try:
+                for position in self.chromosome_ref[chromosome]:
+                    listInfo=self.chromosome_ref[chromosome].get(position)
+                    if listInfo[1] in mutationCounter:
+                        mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                    else:
+                        mutationCounter[listInfo[1]]=1
+
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :"+chromosome+"\n"+"######### \n")
+                for mutation in mutationCounter:
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                    
+                    self.plainTextEdit_2.setPlainText(message)
+            except:
+                message="Please select Chromosome"
+                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+
+
+
+
 
 
     #Fonction 
@@ -254,8 +357,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 fig,ax = plt.subplots()
                 ax.get_xaxis().set_visible(False)
                 ax.get_yaxis().set_visible(False)
-                ax.set_title("Répartition des mutations sur le chromosomes "+chromosome, size=13, color='Black', style='normal')
-                #Taile des points 10, couleur noir
+                ax.set_title("Distribution of mutations on the Chromosome"+chromosome, size=13, color='Black', style='normal')
+                #Size of the points, color black
                 point= plt.scatter(x,y,color="black",  s=10)
                 #De base les annotations ne sont pas visibiles
                 annot = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",bbox=dict(boxstyle="round", fc="w"),arrowprops=dict(arrowstyle="->"))
