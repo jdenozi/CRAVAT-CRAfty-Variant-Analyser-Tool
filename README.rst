@@ -1,60 +1,49 @@
-README
+CRAVAT: Crafty Variant Analyser Tool Version 1.0
+================================================
+The CRAVAT project is a program designed for working with VCF file (only). The aim of CRAVAT tool is to provide easily accessible methods with GUI for working with complex genetic variation data in the form of VCF files.
 
-=======
+This toolset can be used to perform the following operations on VCF files:
 
-Les différents fichiers
------------------------
-1) main_script.py
-Comprend le script principal, permettant de parser le fichier vcf et de créer les dictionnaires
-
-2) fonction_script.py
-Comprend les différentes méthodes créer permettant de sortir des infos/graphique du fichier
-
-3) start_scrip.py
-Correspond au main, afin de tester les différentes méthodes
-
-4) ui_main_window.py
-Comprend le corps de l'interface graphique
-
-5) main_window.py
-Comprend les méthodes appelés sur les différentes parties de l'interface graphique
-
-6) start_script.py
-Correspond au main permettant de lancer l'interface graphique
+    Filter out specific Chromosome
+    Compare files
+    Summarize variants
+    Filter out 
+    Filter out specifiquely with quality and position
 
 
-Installation de Python 3 et du module Qt
 
--------------------------
+Author
+======
+Denozi Julien <denozi.j@gmail.com>
 
-1) Windows
+Python Requirements
+===================
 
+I currently recommend using Python 3.6.5 from http://www.python.org
+CRAVAT is currently supported and tested on the following Python
+implementations:
+Python 3.5
+
+Dependencies
+============
+
+- matplotlib, see http://matplotlib.org/ 
+  CRAVAT uses this package to plot graphic. Matplotlib is a Python 2D plotting library which produces publication quality figures in a variety of hardcopy formats and interactive environments across platforms.
+  
+- Qt, see https://www.qt.io/ 
+  This package is only used in GUI. It's a cross-platform application framework and widget toolkit for creating classic and embedded graphical user interfaces, and applications that run on various software and hardware platforms with little or no change in the underlying codebase, while still being a native application with native capabilities and speed.
+
+-Pillow, see https://pillow.readthedocs.io/en/5.3.x/
+
+Installation
+============
 ::
-    
-    
-	py -m pip install pyqt5
+git clone https://github.com/jdenozi/CRAVAT-CRAfty-Variant-Analyser-Tool.git
 
-
-2) Unix / MacOS
-    
-	::
-    pip pyqt5
-
-
-
-
-
-
+Usage
+=====
+Goes to CRAVAT directory
 ::
-
-    #!/usr/bin/env python3
-    #-*- coding: utf-8 -*-
-    
-    import os
-    import re
-Installation de Mathplotlib
----------------------------
-:: 
-pip mathplotlib
+python3 start_app.py
 
 
