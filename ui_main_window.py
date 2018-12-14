@@ -7,7 +7,7 @@ from main_window import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        
+        self.windowAbout=None
         
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(673, 486)
@@ -158,16 +158,25 @@ class Ui_MainWindow(object):
         
         self.actionSauvegarder = QtWidgets.QAction(MainWindow)
         self.actionSauvegarder.setObjectName("actionSauvegarder")
+        self.actionSauvegarder.setShortcut("Ctrl+S")
+        self.actionSauvegarder.setStatusTip("Save File")
+        self.actionSauvegarder.triggered.connect(self.file_save)
+
+
         self.actionCopier = QtWidgets.QAction(MainWindow)
         self.actionCopier.setObjectName("actionCopier")
+        self.actionCopier.setShortcut("Ctrl+C")
         self.actionColler = QtWidgets.QAction(MainWindow)
         self.actionColler.setObjectName("actionColler")
+        self.actionColler.setShortcut("Ctrl+V")
         self.actionSupprimer = QtWidgets.QAction(MainWindow)
         self.actionSupprimer.setObjectName("actionSupprimer")
+        self.actionSupprimer.setShortcut("Ctrl+z")
         self.actionFull_screen = QtWidgets.QAction(MainWindow)
         self.actionFull_screen.setObjectName("actionFull_screen")
         self.actionA_propos = QtWidgets.QAction(MainWindow)
         self.actionA_propos.setObjectName("actionA_propos")
+        
         self.actionSignaler_un_bug = QtWidgets.QAction(MainWindow)
         self.actionSignaler_un_bug.setObjectName("actionSignaler_un_bug")
         self.menuFichier.addAction(self.actionNouveau_fichier)
@@ -182,7 +191,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuEdition.menuAction())
         self.menuBar.addAction(self.menuFen_tre.menuAction())
         self.menuBar.addAction(self.menuAide.menuAction())
-
+        self.actionA_propos.triggered.connect(self.About)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
@@ -240,7 +249,8 @@ class Ui_MainWindow(object):
         self.actionFull_screen.setShortcut(_translate("MainWindow", "F11"))
         self.actionA_propos.setText(_translate("MainWindow", "About"))
         self.actionSignaler_un_bug.setText(_translate("MainWindow", "Signaler un bug "))
-        
+
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     ex = Ui_MainWindow()
