@@ -88,7 +88,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 if listeInfo[1] not in differentMutation:
                     differentMutation.append(listeInfo[1])
         return (differentMutation)
-    
+    """
+    Save text in a file
+
+    """
+    @pyqtSlot() 
+    def file_save(self):
+        (name,filte) = QFileDialog.getSaveFileName(self, 'Save File', filter="txt(*.txt)")
+        file = open(name,'w')
+        text = self.plainTextEdit_2.toPlainText()
+        file.write(text)
+        file.close()
     """
     Open the file tree with a filter on the VCF file
     Creation of the chromosome dictionnary, containing a position dictionnary
@@ -501,3 +511,4 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         ui=Dialog()
         ui.setupUi(widget)
         widget.exec_()
+    
