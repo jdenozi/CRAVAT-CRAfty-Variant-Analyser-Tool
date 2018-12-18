@@ -9,6 +9,7 @@ The file contain all the graphical methods connected to the data analysis method
 
 
 #LIBRARY
+import dialogue
 import os
 from PyQt5.QtWidgets import *
 from ui_main_window import Ui_MainWindow
@@ -21,43 +22,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 Declaration of the class About
 contain information about program and author
 """
-class Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(400, 300)
-        self.gridLayout = QtWidgets.QGridLayout(Dialog)
-        self.gridLayout.setContentsMargins(11, 11, 11, 11)
-        self.gridLayout.setSpacing(6)
-        self.gridLayout.setObjectName("gridLayout")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setSpacing(6)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
-        self.textBrowser.setObjectName("textBrowser")
-        self.verticalLayout.addWidget(self.textBrowser)
-        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
-
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "About project"))
-        self.textBrowser.setHtml(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600;\">CRAVAT: Crafty Variant Analyser Tool Version 1.0</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The CRAVAT project is a program designed for working with VCF file (only). The aim of CRAVAT tool is to provide easily accessible methods with GUI for working with complex genetic variation data in the form of VCF files.</p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This toolset can be used to perform the following operations on VCF files:</p>\n"
-"<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\"><li style=\" margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:40px; -qt-block-indent:0; text-indent:0px;\">Filter out specific Chromosome</li>\n"
-"<li style=\" margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:40px; -qt-block-indent:0; text-indent:0px;\">Compare files</li>\n"
-"<li style=\" margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:40px; -qt-block-indent:0; text-indent:0px;\">Summarize variants</li>\n"
-"<li style=\" margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:40px; -qt-block-indent:0; text-indent:0px;\">Filter out</li>\n"
-"<li style=\" margin-top:0px; margin-bottom:12px; margin-left:40px; margin-right:40px; -qt-block-indent:0; text-indent:0px;\">Filter out specifiquely with quality and position<a name=\"user-content-author\"></a> </li></ul>\n"
-"<p style=\" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a name=\"user-content-author\"></a><span style=\" font-size:x-large; font-weight:600;\">A</span><span style=\" font-size:x-large; font-weight:600;\">uthor</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Denozi Julien &lt;<a href=\"mailto:denozi.j@gmail.com\"><span style=\" text-decoration: underline; color:#0000ff;\">denozi.j@gmail.com</span></a>&gt;</p></body></html>"))
-
 
 """
 Déclaration of the class main window
@@ -71,7 +35,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.setupUi(self)
         self.show()
    
-       #Updated from the drop-down list of chromosomes/mutations to each new file 
+    #Updated from the drop-down list of chromosomes/mutations to each new file 
     def createItemsList(self, i):        
         return (self.comboBox_2.addItem(i))
     
@@ -89,7 +53,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     differentMutation.append(listeInfo[1])
         return (differentMutation)
     """
-    Save text in a file
+    Save text of thje right box in GUI  in a file
 
     """
     @pyqtSlot() 
@@ -106,7 +70,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     """
     @pyqtSlot()
     def on_actionOuvrir_triggered(self):
-        (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"Nouveau_fichier",  filter="vcf(*.vcf)")
+        (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"New_file",  filter="vcf(*.vcf)")
         #Updated old items from each drop-down list when a new file is opened
         if self.comboBox_2.count()>1 :
             numberOfItemsList=self.comboBox_2.count()
@@ -124,13 +88,12 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         else:
             pass
         self.chromosome_ref.clear()
-        #Message error if the file is empty
         if os.path.getsize(nomFichier)==0:
             message="Sorry, the file seems corrupted. Check the status of the file. It seems to be empty"
             QMessageBox.question(self, "File corrupted",message)
 
         if nomFichier:
-            QMessageBox.information(self,"TRACE", "Fichier à ouvrir:\n\n%s"%nomFichier)
+            QMessageBox.information(self,"TRACE", "File to open:\n\n%s"%nomFichier)
             with open(nomFichier,"r") as vcf:
                 file_read=vcf.readlines()
             #Reading the VCF file and creating the dictionary
@@ -213,7 +176,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             compteur_mutation=0
             for position in self.chromosome_ref.get(chromosome):
                 compteur_mutation=compteur_mutation+1
-            liste_chromosome_nb_mutation.append("Chromosome: "+str(chromosome)+" Nombre de mutation: "+str(compteur_mutation))
+            liste_chromosome_nb_mutation.append("Chromosome: "+str(chromosome)+" Mutation number: "+str(compteur_mutation))
             liste_chromosome.append(chromosome)
             liste_mutation.append(compteur_mutation)
             
@@ -246,19 +209,25 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     bars[index].set_facecolor("Yellow")
         
             plt.xlabel("Chromosome")
-            plt.ylabel('Nombre de Mutation')
+            plt.ylabel('Mutation number')
             plt.show()
         except ZeroDivisionError:
             message="Please, open file"
             QMessageBox.question(self,"Error",message,QMessageBox.Yes)
 
+    #Function that allows to count the number of mutations of a chromosome with a filter on the quality and the position
     def mutationCounterPerChromosome(self):
         mutationCounter={}
         chromosome=self.comboBox_2.currentText()
+        #corresponds to box 1 of the quality
         qual1=self.lineEdit_3.text()
+        #corresponds to box 2 of the quality
         qual2=self.lineEdit_4.text()
+        #correspond to box 1 of the intervalle
         pos2=self.lineEdit.text()
+        #corresponde to box 2 of the intervalle
         pos1=self.lineEdit_2.text()
+        #check if the box is ticked
         if self.checkBox.checkState()==True and self.checkBox_2.checkState()==True:
             try: 
                 for position in self.chromosome_ref[chromosome]:
@@ -365,11 +334,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
 
 
-    #Fonction 
+    #Dynamic graph representing the different mutations along the chromosome
     def dynamicPlot(self, chromosome):
-    
-        
-        if type(chromosome)==str:#Récupère le paramètre, le fais devenir une var type str si c'est un int
+        if type(chromosome)==str:
             try:
                 positionLoop=self.chromosome_ref[chromosome]
                 liste_position=[]
@@ -377,33 +344,38 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 liste_ref_mutation=[]
                 liste_insert_mutation=[]
                 
-                for position in self.chromosome_ref[chromosome]: #boucle sur les différentes positions de la clé chromosome passer en paramètre dans la fonction
-                    liste_position.append(position)#création d'une liste comprenant toutes les positions de la clé
-                    mut=(self.chromosome_ref[chromosome].get(position))
-                    mutation.append(mut)
-                    liste_ref_mutation.append(mut[0])
-                    liste_insert_mutation.append(mut[1])
+                for position in self.chromosome_ref[chromosome]:
+                    liste_position.append(position)
+                    mut=(self.chromosome_ref[chromosome].get(position))#ecovers the mutations of the position
+                    mutation.append(mut)#add mutation
+                    liste_ref_mutation.append(mut[0])#add reference
+                    liste_insert_mutation.append(mut[1])#add the insertion, exemple= <INS:ALU>
                     
-                    #Générateur permettant de parcourir les valeurs de la première clé, et récupérer la variable à partir de l'indice lorsque l'indice est égale à
-                    #la taille total du nombre de valeur de la premiere clé
+                    '''
+                    Generator to browse the values of the first key,
+                    and retrieve the variable from the index when index is equal 
+                    to the total size of the number of value of the first key
+                    '''
                 def valueIt(x):
                     j=0
                     for i in x:
                         j=j+1
                         if j==len(x):
-                            yield i #ici yield renvois i, qui correspond à la dernière valeur de la premiere clé, sous python 3 les dictionnaires garde
-                                #leur ordre d'entrée, donc la derniere valeur correspond à la position la plus élevé
-                        
-                for i in valueIt(positionLoop):#Récupère la derniere valeurs de la liste avec le générateur
+                            yield i 
+
+                #Get the last value from the list with the generator
+                for i in valueIt(positionLoop):
                     last=int(i)
+
+                #Calculate the percentage of each mutation
                 liste_position_percent=[]
                 liste_values=[]
-                
                 for i in liste_position:
                     j=(int(i)*100)/int(last)
                     liste_position_percent.append(j)
                     liste_values.append(1)
-                
+
+                #Initialize the values of the y and x axis
                 x=liste_position_percent
                 y=liste_values
                 
@@ -419,7 +391,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 annot.set_visible(False)
                 ax.legend(["Nombre de mutation: "+str(len(liste_position))+"\nNombre estimé de nucléotides: "+str(last)+"\nPourcentage de nucléotide mutant: "+str(len(liste_position)/last)]).draggable()
 
-                #Rajouter la liste des types de mutations pour avoir en label la mutation et son type
+               # Add the list of types of mutations to label the mutation and its type
                 def update_annot(ind):
                     pos = point.get_offsets()[ind["ind"][0]]
                     annot.xy = pos
@@ -447,6 +419,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                  message="Please select Chromosome & open file"
                  QMessageBox.question(self,"Error",message,QMessageBox.Yes)
                  
+    #Function to close the window with an event asking for confirmation of the action             
     @pyqtSlot()
     def on_actionQuitter_triggered(self):
         self.close()
@@ -460,32 +433,57 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         else:
             event.ignore()
             
-            
+    #updated information about the functions selected in the drop-down list        
     def updateText(self, message):
         self.plainTextEdit.clear()
         if self.comboBox_3.currentIndex()==0:
-                message="Open file before launch any function\nThis section provide informations about choosen method\nDont forget to read every parameter the function need"
+                message="Open file before launch any function\n
+                This section provide informations about chosen method\n
+                Dont forget to read every parameter the function need"
                 self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==1:
-            message="Function which calcul the current number of Chromosome in the current vcf file \nType= Text"
+            message="Function which calcul the current number of Chromosome in the current vcf file \n
+            Type= Text\n
+            Could be save with Ctrl-s in a file"
             self.plainTextEdit.setPlainText(message )
+
         if self.comboBox_3.currentIndex()==2:
-            message="Function which calcul the current number of Chromosome mutation in the current vcf file \nType=text"
+            message="Function which calcul the current number of Chromosome mutation in the current vcf file \n
+            Type=Text\n
+            Could be save with Ctrl-s in a file"
             self.plainTextEdit.setPlainText(message )
+
         if self.comboBox_3.currentIndex()==3:
-            message="Graphs of the current number of chromosome mutation in the current vcf file \nType= Graph\nColor code mean that the number of mutation is above or behind the average Chromosome of the entire file"
+            message="Graphs of the current number of chromosome mutation in the current vcf file \n
+            Type= Graph\n
+            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file
+            The graph can be enlarged, save and move with the menu bar under the graph"
             self.plainTextEdit.setPlainText(message )
+
         if self.comboBox_3.currentIndex()==4:
-            message="Graphs of the current number of chromosome mutation in the current Chromosome \nType= Graph"
+            message="Graphs of the current number of chromosome mutation in the current Chromosome \n
+            Type= Graph
+            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file
+            The graph can be enlarged, save and move with the menu bar under the graph"
             self.plainTextEdit.setPlainText(message )
+
         if  self.comboBox_3.currentIndex()==5:
-            message="Dynamic graph"
+            message="Dynamic graph representing the different mutations along the chromosome\n
+            Type=Graph\n
+            The plot could be draggable\n
+            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file
+            The graph can be enlarged, save and move with the menu bar under the graph"
             self.plainTextEdit.setPlainText(message) 
+
         if  self.comboBox_3.currentIndex()==6:
-            message="Function which calcul the number of a type of mutation, with parameter :quality & position"
+            message="Function which calcul the number of a type of mutation, with parameter :quality & position\n
+            Type=Text\n
+            Check position or quality if you want to filter the results with its values\n
+            Could be save and compare with anoter chromosome or file.
+            "
             self.plainTextEdit.setPlainText(message)
-    
-    #Méthode permettant de connection de la comboBox au Launcher et de lancer la bonne méthode
+
+    #Method to connect a box to the launcher and launch the right method
     def Launcher(self):
         
         if self.comboBox_3.currentIndex()==1:
@@ -503,12 +501,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.dynamicPlot(chromosome)
         if self.comboBox_3.currentIndex()==6:
             self.mutationCounterPerChromosome()
-
+    #Clear the right box
     def Clear(self):
         self.plainTextEdit_2.clear()
+
+    #Open window about the program
     def About(self):
         widget=QDialog(self)
-        ui=Dialog()
+        ui=dialogue.Dialog()
         ui.setupUi(widget)
         widget.exec_()
     
