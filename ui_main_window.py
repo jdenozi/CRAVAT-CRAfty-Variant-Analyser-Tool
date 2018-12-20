@@ -10,7 +10,7 @@ class Ui_MainWindow(object):
         self.windowAbout=None
         
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(673, 486)
+        MainWindow.resize(900, 470)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralWidget)
@@ -35,7 +35,6 @@ class Ui_MainWindow(object):
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
-        self.comboBox_3.addItem("") 
         self.comboBox_3.addItem("") 
         self.verticalLayout_3.addWidget(self.comboBox_3)
 
@@ -178,7 +177,6 @@ class Ui_MainWindow(object):
         self.actionA_propos.setObjectName("actionA_propos")
         
         self.actionSignaler_un_bug = QtWidgets.QAction(MainWindow)
-        self.actionSignaler_un_bug.setObjectName("actionSignaler_un_bug")
         self.menuFichier.addAction(self.actionNouveau_fichier)
         self.menuFichier.addAction(self.actionSauvegarder)
         self.menuEdition.addAction(self.actionCopier)
@@ -186,7 +184,6 @@ class Ui_MainWindow(object):
         self.menuEdition.addAction(self.actionSupprimer)
         self.menuFen_tre.addAction(self.actionFull_screen)
         self.menuAide.addAction(self.actionA_propos)
-        self.menuAide.addAction(self.actionSignaler_un_bug)
         self.menuBar.addAction(self.menuFichier.menuAction())
         self.menuBar.addAction(self.menuEdition.menuAction())
         self.menuBar.addAction(self.menuFen_tre.menuAction())
@@ -194,7 +191,6 @@ class Ui_MainWindow(object):
         self.actionA_propos.triggered.connect(self.About)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        
         
         
     def retranslateUi(self, MainWindow):
@@ -210,12 +206,10 @@ class Ui_MainWindow(object):
         self.comboBox_3.activated[int].connect(self.updateText)
         self.comboBox_3.setItemText(3, _translate("MainWindow", "How many mutation do chromosome have"))
         self.comboBox_3.activated[int].connect(self.updateText)
-        self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation "))
-        self.comboBox_3.activated[int].connect(self.updateText)
-        self.comboBox_3.setItemText(5, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation in a choosen Chromosome "))
+        self.comboBox_3.setItemText(4, _translate("MainWindow", "Dynamic visualization plot for every Chromosome mutation in a choosen Chromosome "))
         self.comboBox_3.activated[int].connect(self.updateText)
          
-        self.comboBox_3.setItemText(6, _translate("MainWindow", "Mutation filter with quality and interval position "))
+        self.comboBox_3.setItemText(5, _translate("MainWindow", "Mutation filter with quality and interval position "))
         self.comboBox_3.activated[int].connect(self.updateText)
         
         
@@ -224,7 +218,7 @@ class Ui_MainWindow(object):
         
         self.comboBox.setItemText(0, _translate("MainWindow", "Select mutation"))
         
-        self.plainTextEdit_2.setPlainText(_translate("MainWindow", "a\n"))
+        self.plainTextEdit_2.setPlainText(_translate("MainWindow", ""))
         
         
         self.checkBox.setText(_translate("MainWindow", "Quality"))
@@ -248,7 +242,6 @@ class Ui_MainWindow(object):
         self.actionFull_screen.setText(_translate("MainWindow", "Full screen"))
         self.actionFull_screen.setShortcut(_translate("MainWindow", "F11"))
         self.actionA_propos.setText(_translate("MainWindow", "About"))
-        self.actionSignaler_un_bug.setText(_translate("MainWindow", "Signaler un bug "))
 
 
 if __name__ == "__main__":
