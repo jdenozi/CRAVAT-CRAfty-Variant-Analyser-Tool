@@ -157,7 +157,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             compteur_chromosome=compteur_chromosome+1
         return(str(compteur_chromosome))
         
-    #Count every mutation in current file
+    #Count every mutation in a Chromosome(x=chromosome select in the drop-down list)
     def mutationCounter(self, x):
         counter=0
         try:
@@ -218,111 +218,170 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #Function that allows to count the number of mutations of a chromosome with a filter on the quality and the position
     def mutationCounterPerChromosome(self):
         mutationCounter={}
+        #correspond à la liste déroulante de chromosome
         chromosome=self.comboBox_2.currentText()
         #corresponds to box 1 of the quality
-        qual1=self.lineEdit_3.text()
+        qual1=self.lineEdit_3.text().strip().strip("'")
         #corresponds to box 2 of the quality
-        qual2=self.lineEdit_4.text()
+        qual2=self.lineEdit_4.text().strip().strip("'")
         #correspond to box 1 of the intervalle
-        pos2=self.lineEdit.text()
+        pos2=self.lineEdit.text().strip().strip("'")
         #corresponde to box 2 of the intervalle
         pos1=self.lineEdit_2.text()
         #check if the box is ticked
-        if self.checkBox.checkState()==True and self.checkBox_2.checkState()==True:
-            try: 
-                for position in self.chromosome_ref[chromosome]:
-                    try:
-                        if float(position)>=float(pos1) and float(position)<=float(pos2):
-                            listInfo=self.chromosome_ref[chromosome].get(position)
-                            try:
-                                if float(listInfo[2])>=float(qual1) and float(listInfo[2])<=float(qual2):
-                                    if listInfo[1] in mutationCounter:
-                                        mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
-                                    else:
-                                        mutationCounter[listInfo[1]]=1
-                                else:
-                                    continue
-                            except:
-                                message="Please, enter the quality"
-                                QMessageBox.question(self,"Error", message, QMessageBox.yes)
+
+        if self.checkBox.isChecked()==True and self.checkBox_2.isChecked()==True:
+            #try: 
+            for position in self.chromosome_ref[chromosome]:
+                #try:
+                if position!="" and position !=".":
+                    if float(position)>=float(pos1) and float(position)<=float(pos2):
+                        listInfo=self.chromosome_ref[chromosome].get(position)
+                        quality=listInfo[2]#correspond to quality in vcf file
+                        mutation=listInfo[1]#correspond to mutation in vcf file
+                        #try:
+                        if self.comboBox.currentIndex()!=0:
+                            if float(quality)>=float(qual1) and float(quality)<=float(qual2)\
+                                    and mutation==self.comboBox.currentText():
+                                        if mutation in mutationCounter:
+                                            mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                                        else:
+                                            mutationCounter[mutation]=1
                         else:
-                            continue
-                    except:
-                        message="Please, enter position"
-                        QMessageBox.question(self, "Error", message,QMessageBox.Yes)
-
-                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
-                for mutation in mutationCounter:
-                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
-                    
-                    self.plainTextEdit_2.setPlainText(message)
-            except:
-                message="Please, enter the right interval or right quality"
-                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
-
-        if self.checkBox_2.checkState()==True and self.checkBox.checkState()==False:
-            try:
-                for position in self.chromosome_ref[chromosome]:
-                    try:
-                         if float(position)>=float(pos1) and float(position)<=float(pos2):
-                            listInfo=self.chromosome_ref[chromosome].get(position)
-                            if listInfo[1] in mutationCounter:
-                                mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                            if float(quality)>=float(qual1) and float(quality)<=float(qual2):
+                                if listInfo[1] in mutationCounter:
+                                    mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                                else:
+                                    mutationCounter[mutation]=1
                             else:
-                                mutationCounter[listInfo[1]]=1
-                         else:
-                            continue
-                    except:
-                        message="Please, select position"
-                        QMessageBox.question(self,"Error", message, QMessageBox.Yes)
+                                continue
+                        #except:
+                            #message="Please, enter the quality"
+                            #QMessageBox.question(self,"Error", message, QMessageBox.yes)
+                            #break
+                else:
+                    message="Quality seems to be empty or deteriorate. Please checjk the validity of your file"
+                    QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+                #except:
+                    #message="Please, enter position"
+                    #QMessageBox.question(self, "Error", message,QMessageBox.Yes)
+                    #break
 
-                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"######### \n")
-                for mutation in mutationCounter:
-                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
-                    
-                    self.plainTextEdit_2.setPlainText(message)
-            except:
-                message="Please, select Chromosome"
-                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+            self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n#Mutation\t#tMutation number\t#Mutation percent\n")
+            for mutation in mutationCounter:
+                message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t"+str(mutationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%\n "
+                self.plainTextEdit_2.setPlainText(message)
+            #except:
+                #message="Please select Chromosome"
+                #QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+                
 
-        if self.checkBox_2.checkState()==False and self.checkBox.checkState()==True:
+        if self.checkBox_2.isChecked()==True and self.checkBox.isChecked()==False:
+            #try:
+            for position in self.chromosome_ref[chromosome]:
+                #try:
+                listInfo=self.chromosome_ref[chromosome].get(position)
+                mutation=listInfo[1]
+                quality=listInfo[2]
+                if self.comboBox.currentIndex()!=0:
+                    if float(position)>=float(pos1) and float(position)<=float(pos2)and mutation==self.comboBox.currentText():
+                        if mutation in mutationCounter:
+                            mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                        else:
+                            mutationCounter[mutation]=1
+                    else:
+                        continue
+
+                
+                else:
+                     if float(position)>=float(pos1) and float(position)<=float(pos2):
+                        listInfo=self.chromosome_ref[chromosome].get(position)
+                        mutation=listInfo[1]
+                        if mutation in mutationCounter:
+                            mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                        else:
+                            mutationCounter[mutation]=1
+                     else:
+                        continue
+                  
+                #except:
+                    #message="Please, select position"
+                    #QMessageBox.question(self,"Error", message, QMessageBox.Yes)
+                    #break
+
+            self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"#Mutation\t#tMutation number\t#Mutation percent\n")
+            for mutation in mutationCounter:
+                message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t "+str(mutationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%\n"
+                
+                self.plainTextEdit_2.setPlainText(message)
+            #except:
+                #message="Please, select Chromosome"
+                #QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+
+        if self.checkBox_2.isChecked()==False and self.checkBox.isChecked()==True:
             try:
                 for position in self.chromosome_ref[chromosome]:
                     listInfo=self.chromosome_ref[chromosome].get(position)
+                    quality=listInfo[2]
+                    mutation=listInfo[1]
                     try:
-                        if float(listeInfo[2])>=float(qual1) and float(listeInfo[2])<=float(qual2):
-                            if listInfo[1] in mutationCounter:
-                                mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
+                        if quality!="" and quality!='.':
+                            if self.comboBox.currentText!=0:
+                                if float(quality)>=float(qual1) and float(quality)<=float(qual2)and mutation==self.comboBox.currentText():
+                                    if mutation in mutationCounter:
+                                        mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                                    else:
+                                        mutationCounter[mutation]=1
                             else:
-                                mutationCounter[listInfo[1]]=1
+                                if float(quality)>=float(qual1) and float(quality)<=float(qual2):
+                                    if [mutation] in mutationCounter:
+                                        mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                                    else:
+                                        mutationCounter[mutation]=1
+
                         else:
-                            continue
-                    
+                            message="Quality seems to be empty or deteriorate, please check the validity of your file"
+                            QMessageBox.question(self,"Error", message,QMessageBox.Yes)
+                            break
                     except:
                         message="Please, enter quality"
                         QMessageBox.question(self, "Error", message, QMessageBox.Yes)
+                        break
                 
-                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :"+chromosome+"\n"+"######### \n")
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"#Chromosome :"+chromosome+"\n"+"#Mutation\t#Mutation number\t#Mutation percent \n")
                 for mutation in mutationCounter:
-                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t"+str(mutatationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%\n"
                     
                     self.plainTextEdit_2.setPlainText(message)
             except:
                 message="Please, select Chromosome"
                 QMessageBox.question(self,"Error",message,QMessageBox.Yes)
 
-        if self.checkBox_2.checkState()==False and self.checkBox.checkState()==False:
+        if self.checkBox_2.isChecked()==False and self.checkBox.isChecked()==False:
             try:
-                for position in self.chromosome_ref[chromosome]:
-                    listInfo=self.chromosome_ref[chromosome].get(position)
-                    if listInfo[1] in mutationCounter:
-                        mutationCounter[listInfo[1]]=mutationCounter.get(listInfo[1])+1
-                    else:
-                        mutationCounter[listInfo[1]]=1
+                if self.comboBox.currentIndex()!=0:
+                    for position in self.chromosome_ref[chromosome]:
+                        listInfo=self.chromosome_ref[chromosome].get(position)
+                        mutation=listInfo[1]
+                        if mutation==self.comboBox.currentText():
+                            if mutation in mutationCounter:
+                                mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                            else:
+                                mutationCounter[mutation]=1
+                    
 
-                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :"+chromosome+"\n"+"######### \n")
+                else:
+                    for position in self.chromosome_ref[chromosome]:
+                        listInfo=self.chromosome_ref[chromosome].get(position)
+                        mutation=listInfo[1]
+                        if mutation in mutationCounter:
+                            mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                        else:
+                            mutationCounter[mutation]=1
+
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"#Chromosome :"+chromosome+"\n"+ "#Mutation\t#tMutation number\t#Mutation percent\n")
                 for mutation in mutationCounter:
-                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"  "+str(mutationCounter[mutation])+"\n"
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t"+str(mutationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%"+"\n"
                     
                     self.plainTextEdit_2.setPlainText(message)
             except:
@@ -412,7 +471,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                 fig.canvas.draw_idle()
                                 
                 fig.canvas.mpl_connect("motion_notify_event", hover)
-                img=Image.open("blanc.png")
+                img=Image.open("picture/blanc.png")
                 plt.imshow(img, zorder=0,  extent=[0.1, 105.0, -1.0, 3.0])
                 plt.show()
             except KeyError:
@@ -437,50 +496,43 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def updateText(self, message):
         self.plainTextEdit.clear()
         if self.comboBox_3.currentIndex()==0:
-                message="Open file before launch any function\n
-                This section provide informations about chosen method\n
+            message="Open file before launch any function\n\
+                This section provide informations about chosen method\n\
                 Dont forget to read every parameter the function need"
-                self.plainTextEdit.setPlainText(message )
+            self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==1:
-            message="Function which calcul the current number of Chromosome in the current vcf file \n
-            Type= Text\n
+            message="Function which calcul the current number of Chromosome in the current vcf file \n\
+            Type= Text\n\
             Could be save with Ctrl-s in a file"
             self.plainTextEdit.setPlainText(message )
 
         if self.comboBox_3.currentIndex()==2:
-            message="Function which calcul the current number of Chromosome mutation in the current vcf file \n
-            Type=Text\n
+            message="Function which calcul the current number of Chromosome mutation in the current vcf file \n\
+            Type=Text\n\
             Could be save with Ctrl-s in a file"
             self.plainTextEdit.setPlainText(message )
 
         if self.comboBox_3.currentIndex()==3:
-            message="Graphs of the current number of chromosome mutation in the current vcf file \n
-            Type= Graph\n
-            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file
+            message="Graphs of the current number of chromosome mutation in the current vcf file \n\
+            Type= Graph\n\
+            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file\n\
             The graph can be enlarged, save and move with the menu bar under the graph"
             self.plainTextEdit.setPlainText(message )
 
-        if self.comboBox_3.currentIndex()==4:
-            message="Graphs of the current number of chromosome mutation in the current Chromosome \n
-            Type= Graph
-            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file
-            The graph can be enlarged, save and move with the menu bar under the graph"
-            self.plainTextEdit.setPlainText(message )
 
-        if  self.comboBox_3.currentIndex()==5:
-            message="Dynamic graph representing the different mutations along the chromosome\n
-            Type=Graph\n
-            The plot could be draggable\n
-            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file
+        if  self.comboBox_3.currentIndex()==4:
+            message="Dynamic graph representing the different mutations along the chromosome\n\
+            Type=Graph\n\
+            The plot could be draggable\n\
+            Color code mean that the number of mutation is above or behind the average Chromosome of the entire file\n\
             The graph can be enlarged, save and move with the menu bar under the graph"
             self.plainTextEdit.setPlainText(message) 
 
-        if  self.comboBox_3.currentIndex()==6:
-            message="Function which calcul the number of a type of mutation, with parameter :quality & position\n
-            Type=Text\n
-            Check position or quality if you want to filter the results with its values\n
-            Could be save and compare with anoter chromosome or file.
-            "
+        if  self.comboBox_3.currentIndex()==5:
+            message="Function which calcul the number of a type of mutation, with parameter :quality & position\n\
+            Type=Text\n\
+            Check position or quality if you want to filter the results with its values\n\
+            Could be save and compare with anoter chromosome or file"
             self.plainTextEdit.setPlainText(message)
 
     #Method to connect a box to the launcher and launch the right method
@@ -499,7 +551,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if self.comboBox_3.currentIndex()==4:
             chromosome=self.comboBox_2.currentText()
             self.dynamicPlot(chromosome)
-        if self.comboBox_3.currentIndex()==6:
+
+        if self.comboBox_3.currentIndex()==5:
             self.mutationCounterPerChromosome()
     #Clear the right box
     def Clear(self):
