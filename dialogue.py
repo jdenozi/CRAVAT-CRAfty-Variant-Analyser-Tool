@@ -2,6 +2,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets 
 from PyQt5.QtWidgets import * 
+"""
+This class contain all object for the new window when About is clicked
+"""
 class Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
