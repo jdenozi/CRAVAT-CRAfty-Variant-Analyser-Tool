@@ -79,6 +79,7 @@ Dynamic graph representing the different mutations along the chromosome.
 Type=Graph.
 The plot could be draggable.
 The graph can be enlarged, save and move with the menu bar under the graph.
+
 Mutation filter with quality, position and mutation
 ---------------------------------------------------
 Function which calcul the number of a type of mutation and his percentage in the current chromosome, with parameter :mutation type, quality & position.
