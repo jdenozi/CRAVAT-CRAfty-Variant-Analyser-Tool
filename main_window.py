@@ -3,8 +3,9 @@
 
 '''
 CRAVAT: crafty variant analyser tool
+Author: Julien DENOZI
 
-The file contain all the graphical methods connected to the data analysis method
+The file contain all  graphicals methods connected to the data analysis method
 '''
 
 
@@ -21,11 +22,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import numpy as np
 import numpy.random
 import matplotlib.pyplot as plt
-""""
-Declaration of the class About
-contain information about program and author
-"""
-
 """
 Déclaration of the class main window
 contains all connections between graphical object and data analysis method
@@ -34,7 +30,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
         super(MainWindow,self).__init__(parent)
         qApp.installEventFilter(self)
-        self.chromosome_ref={}
+        self.chromosome_ref={} #Main dictionnary, which contains all informations about vcf
         self.setupUi(self)
         self.show()
    
@@ -48,6 +44,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def typeOfMutation(self):
         differentMutation=[]
         differentMutation.clear()
+        #clear method, allows to take off older mutation from older file
         
         for chromosome in self.chromosome_ref:
             for position in self.chromosome_ref[chromosome]:
@@ -56,7 +53,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     differentMutation.append(listeInfo[1])
         return (differentMutation)
     """
-    Save text of thje right box in GUI  in a file
+    Save text of the right box in GUI  in a file
 
     """
     @pyqtSlot() 
@@ -430,20 +427,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     last=int(i)
 
                 #Calculate the percentage of each mutation
-                liste_position_percent=[]
+                listeposition=[]
                 liste_values=[]
                 for i in liste_position:
-                    j=(int(i)*100)/int(last)
-                    liste_position_percent.append(j)
+                    listeposition.append(int(i))
                     liste_values.append(1)
 
                 #Initialize the values of the y and x axis
-                x=liste_position_percent
+                x=listeposition
                 y=liste_values
                 
                 position=liste_position
-                fig,(ax,ax2) = plt.subplots(nrows=2, ncols=1,sharex=False)
-                ax.get_xaxis().set_visible(False)
+                #Deux plot seront fait dans la même fenêtre
+                fig,(ax,ax2) = plt.subplots(nrows=2, ncols=1,sharex=False, figsize=(20,30))
+                ax.get_xaxis().set_visible(True)
                 ax.get_yaxis().set_visible(False)
                 ax2.get_xaxis().set_visible(False)
                 ax2.get_yaxis().set_visible(False)
@@ -460,6 +457,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 def update_annot(ind):
                     pos = point.get_offsets()[ind["ind"][0]]
                     annot.xy = pos
+                    #Loop which create each annot for each point
                     information = "Mutation:{},Insertion:{},Position:{}".format(",".join([liste_ref_mutation[n] for n in ind["ind"]]),",".join([liste_insert_mutation[n] for n in ind["ind"]]), ",".join([position[n] for n in ind["ind"]]))
                     annot.set_text(information)
                     
@@ -477,22 +475,25 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                 fig.canvas.draw_idle()
                                 
                 fig.canvas.mpl_connect("motion_notify_event", hover)
-                img=Image.open("picture/blanc.png")
+                #img=Image.open("picture/blanc.png")
 
 
                 #New plot heat map
-                plt.imshow(img,zorder=0,extent=[0.1, 105.0, -1.0, 3.0])
+                ax.set_xlim(0,int(last))
+                ax.set_ylim(1,1)
+                #plt.imshow(img, extent=[0.1, 100, -1.0, 3.0])
                 # Create heatmap
-                heatmap, xedges, yedges = np.histogram2d(y, x, bins=(1,100))
+
+                heatmap, xedges, yedges = np.histogram2d(y, x, bins=(1,125))
                  
                 # Plot heatmap
-                #.plt.clf()
-                #plt.title('HeatMap')
-                #plt.ylabel('y')
-                #plt.xlabel('x')
+                plt.title('Chromosome density along the chromosome')
               # need a colorbar to show the intensity scale
-                img= plt.imshow(heatmap, extent=[0.1, 105.0, -1.0, 3.0],facecolor='hot)
-                plt.colorbar(img)
+                img= plt.imshow(heatmap ,extent=[-1, 100.0, 0, 10.0])
+                #set theme of colorbar
+                img.set_cmap("plasma")
+                #set colorbar under graph
+                fig.colorbar(img,orientation="horizontal")
                 fig.subplots_adjust(hspace=0)
                 plt.show()
 
