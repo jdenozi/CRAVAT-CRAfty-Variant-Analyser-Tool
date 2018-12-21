@@ -1,16 +1,19 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import sys
 
 from PyQt5 import QtCore, QtWidgets, QtGui
 from main_window import *
+"""
+This class create each object for the GUI
+"""
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.windowAbout=None
         
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(900, 470)
+        MainWindow.resize(1000, 470)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralWidget)
@@ -24,7 +27,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         
-        self.setWindowIcon(QtGui.QIcon("Logo_FDS_quadri_fond_blanc.jpg"))
+        self.setWindowIcon(QtGui.QIcon("picture/cravatfox.jpg"))
         
         #Création des items de la liste déroulante des différentes méthodes
         self.comboBox_3 = QtWidgets.QComboBox(self.centralWidget)
@@ -54,11 +57,13 @@ class Ui_MainWindow(object):
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
         self.verticalLayout_3.addWidget(self.comboBox)
-
+        
+        #Creation de la zone d'information des méthodes
         self.gridLayout.addLayout(self.verticalLayout_3, 0, 0, 1, 2)
         self.plainTextEdit_2 = QtWidgets.QPlainTextEdit(self.centralWidget)
         self.plainTextEdit_2.setObjectName("plainTextEdit_2")
          
+         #Bouton Launch
         self.pushButton_2 = QtWidgets.QPushButton(self.centralWidget)
         self.pushButton_2.setObjectName("pushButton_2")
        
@@ -88,6 +93,7 @@ class Ui_MainWindow(object):
         self.lineEdit_3 = QtWidgets.QLineEdit(self.centralWidget)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.horizontalLayout_5.addWidget(self.lineEdit_3)
+        
         self.lineEdit_4 = QtWidgets.QLineEdit(self.centralWidget)
         self.lineEdit_4.setObjectName("lineEdit_4")
         self.horizontalLayout_5.addWidget(self.lineEdit_4)
@@ -110,7 +116,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setSpacing(6)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
-        
+        #Bouton clear
         self.pushButton = QtWidgets.QPushButton(self.centralWidget)
         self.pushButton.setObjectName("pushButton")
         
@@ -143,17 +149,10 @@ class Ui_MainWindow(object):
         #chromosome_ref=self.on_actionOuvrir_triggered()
         
         self.actionNouveau_fichier.setObjectName("actionNouveau_fichier")
-        
         self.actionNouveau_fichier.triggered.connect(self.on_actionOuvrir_triggered)
-        
-
-        
         #Connection Lauch -> méthode
         self.pushButton.clicked.connect(self.Launcher)
-        
-        
         self.pushButton_2.clicked.connect(self.Clear )
-        
         
         self.actionSauvegarder = QtWidgets.QAction(MainWindow)
         self.actionSauvegarder.setObjectName("actionSauvegarder")
@@ -213,7 +212,11 @@ class Ui_MainWindow(object):
         self.comboBox_3.activated[int].connect(self.updateText)
         
         
-        self.plainTextEdit.setPlainText(_translate("MainWindow", "Open file before launch any function\nThis section provide informations about choosen method\nDont forget to read every parameter the function need"))
+        self.plainTextEdit.setPlainText(_translate("MainWindow", "Open file before launch any function.\n\
+                This section provide informations about chosen method.\n\
+                Dont forget to read every parameter the function need.\n\
+                Clear button allow you to clean the entire box.\n\
+                Don't forget, you can save and compare every informations in the box until you don't clear.") )
         self.comboBox_2.setItemText(0, _translate("MainWindow", "Select Chromosome"))
         
         self.comboBox.setItemText(0, _translate("MainWindow", "Select mutation"))
