@@ -60,6 +60,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def file_save(self):
         (name,filte) = QFileDialog.getSaveFileName(self, 'Save File', filter="txt(*.txt)")
         file = open(name,'w')
+        #plainTextEdit = right box in GUI
         text = self.plainTextEdit_2.toPlainText()
         file.write(text)
         file.close()
@@ -72,6 +73,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def on_actionOuvrir_triggered(self):
         (nomFichier,filtre) = QFileDialog.getOpenFileName(self,"New_file",  filter="vcf(*.vcf)")
         #Updated old items from each drop-down list when a new file is opened
+        #ComboBox_2= drop-down list of mutation
         if self.comboBox_2.count()>1 :
             numberOfItemsList=self.comboBox_2.count()
             numberOfItemsListMutation=self.comboBox.count()
@@ -104,6 +106,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     """
                     Instruction filling variables with a ?
                     if the file isnt correct
+                    however filling the information list with reference, quality, and mutation
                     """
                     if len(information)>0:
                         chromosome=information[0]
@@ -143,10 +146,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     message="Sorry, the file seems corrupted. Check the status of the file. It seems to have header but no data"
                     QMessageBox.question(self, "File corrupted",message)
 
-            #Creation of drop-down lists 
+            #Creation of Chromosome drop-down list 
             for chromosome in self.chromosome_ref:
                 self.createItemsList(chromosome)
-                
+            #Creation of Mutation drop-down list    
             for typeMutation in self.typeOfMutation():
                 self.createItemsListMutation(typeMutation)
                 
@@ -164,6 +167,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             for mutation in self.chromosome_ref.get(x):
                 counter=counter+1
             return counter
+        #If no chromosome is selected =>message error pop up
         except TypeError:
             message="Please select Chromosome"
             QMessageBox.question(self,"Error",message,QMessageBox.Yes)
@@ -179,7 +183,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             liste_chromosome_nb_mutation.append("Chromosome: "+str(chromosome)+" Mutation number: "+str(compteur_mutation))
             liste_chromosome.append(chromosome)
             liste_mutation.append(compteur_mutation)
-            
         return (liste_chromosome, liste_mutation)
         
     #Graph which contains the number of mutation for each chromosome
@@ -189,6 +192,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             liste_mutation=[]
             somme=0
             moyenne=0
+            #totalMutationCounter return tupple, where index[0]=liste_chromosome and index[1]=liste_mutation
             for chromosome in self.totalMutationCounter()[0]:
                 liste_chromosome.append(chromosome)
             for mutation in self.totalMutationCounter()[1]:
@@ -196,7 +200,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 somme=somme+mutation
             moyenne=somme/len(self.totalMutationCounter()[1])
             plt.title("Number of mutation per Chromosome")
+            #graph constructions
             bars=plt.bar(liste_chromosome, liste_mutation)
+            #initialisatiof of limite for color
             for index,  mutation in enumerate(liste_mutation):
                  if mutation<=(moyenne*(0.8) ):
                     
@@ -211,11 +217,30 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             plt.xlabel("Chromosome")
             plt.ylabel('Mutation number')
             plt.show()
+        #If any values equal to 0, message error pop up apppear
         except ZeroDivisionError:
             message="Please, open file"
             QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+    '''
+    Function that allows to count the number of mutations of a chromosome with a filter on the quality and the position
+    RESUME OF mutationCounterPerChromosome:
 
-    #Function that allows to count the number of mutations of a chromosome with a filter on the quality and the position
+    4 conditions according to the parameters selected:
+
+        1- quality and position are checked, then look if chromosome is selected(if not error),
+            then look if any mutation is selected ( if not dont filter with mutation but with quality and position, 
+                if yes filter with quality position and mutation)
+
+        2-only quality is checked, then look if chromosome is selected (if not error)
+            then look if any mutation is selected(if not dont filter with mutation but with quality,
+                if yes filter with quality and mutation)
+
+        3- only position is checked, then look if chromosome is selected (if not error)
+            then look if any mutation is selected ( if not dont filter with mutation but with position,
+                if yes filter with mutation and position)
+
+        4-no one is checked, return the entire mutation if mutation is selected flter with mutation
+    '''
     def mutationCounterPerChromosome(self):
         mutationCounter={}
         #correspond à la liste déroulante de chromosome
@@ -241,8 +266,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                 mutation=listInfo[1]#correspond to mutation in vcf file
                                 try:
                                     if self.comboBox.currentIndex()!=0:
+                                        #compare the value in loop and the value write(same step after)
                                         if float(quality)>=float(qual1) and float(quality)<=float(qual2)\
                                                 and mutation==self.comboBox.currentText():
+                                                    #filling dictionnaire with a counter (same step after)
                                                     if mutation in mutationCounter:
                                                         mutationCounter[mutation]=mutationCounter.get(mutation)+1
                                                     else:
@@ -260,13 +287,13 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                     QMessageBox.question(self,"Error", message, QMessageBox.yes)
                                     break
                         else:
-                            message="Quality seems to be empty or deteriorate. Please checjk the validity of your file"
+                            message="Quality seems to be empty or deteriorate. Please check the validity of your file"
                             QMessageBox.question(self,"Error",message,QMessageBox.Yes)
                     except:
                         message="Please, enter position"
                         QMessageBox.question(self, "Error", message,QMessageBox.Yes)
                         break
-
+                #write the all information in the box after filter
                 self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n#Mutation\t#tMutation number\t#Mutation percent\n")
                 for mutation in mutationCounter:
                     message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t"+str(mutationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%\n "
@@ -277,46 +304,46 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
 
         if self.checkBox_2.isChecked()==True and self.checkBox.isChecked()==False:
-            #try:
-            for position in self.chromosome_ref[chromosome]:
-                #try:
-                listInfo=self.chromosome_ref[chromosome].get(position)
-                mutation=listInfo[1]
-                quality=listInfo[2]
-                if self.comboBox.currentIndex()!=0:
-                    if float(position)>=float(pos1) and float(position)<=float(pos2)and mutation==self.comboBox.currentText():
-                        if mutation in mutationCounter:
-                            mutationCounter[mutation]=mutationCounter.get(mutation)+1
-                        else:
-                            mutationCounter[mutation]=1
-                    else:
-                        continue
-
-                
-                else:
-                     if float(position)>=float(pos1) and float(position)<=float(pos2):
+            try:
+                for position in self.chromosome_ref[chromosome]:
+                    try:
                         listInfo=self.chromosome_ref[chromosome].get(position)
                         mutation=listInfo[1]
-                        if mutation in mutationCounter:
-                            mutationCounter[mutation]=mutationCounter.get(mutation)+1
-                        else:
-                            mutationCounter[mutation]=1
-                     else:
-                        continue
-                  
-                #except:
-                    #message="Please, select position"
-                    #QMessageBox.question(self,"Error", message, QMessageBox.Yes)
-                    #break
+                        quality=listInfo[2]
+                        if self.comboBox.currentIndex()!=0:
+                            if float(position)>=float(pos1) and float(position)<=float(pos2)and mutation==self.comboBox.currentText():
+                                if mutation in mutationCounter:
+                                    mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                                else:
+                                    mutationCounter[mutation]=1
+                            else:
+                                continue
 
-            self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"#Mutation\t#tMutation number\t#Mutation percent\n")
-            for mutation in mutationCounter:
-                message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t "+str(mutationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%\n"
-                
-                self.plainTextEdit_2.setPlainText(message)
-            #except:
-                #message="Please, select Chromosome"
-                #QMessageBox.question(self,"Error",message,QMessageBox.Yes)
+                        
+                        else:
+                             if float(position)>=float(pos1) and float(position)<=float(pos2):
+                                listInfo=self.chromosome_ref[chromosome].get(position)
+                                mutation=listInfo[1]
+                                if mutation in mutationCounter:
+                                    mutationCounter[mutation]=mutationCounter.get(mutation)+1
+                                else:
+                                    mutationCounter[mutation]=1
+                             else:
+                                continue
+                      
+                    except:
+                        message="Please, select position"
+                        QMessageBox.question(self,"Error", message, QMessageBox.Yes)
+                        break
+
+                self.plainTextEdit_2.setPlainText(self.plainTextEdit_2.toPlainText()+"\n"+"Chromosome :" +chromosome+"\n"+"#Mutation\t#tMutation number\t#Mutation percent\n")
+                for mutation in mutationCounter:
+                    message=self.plainTextEdit_2.toPlainText()+str(mutation)+"\t"+str(mutationCounter[mutation])+"\t "+str(mutationCounter[mutation]/self.mutationCounter(chromosome)*100)+"%\n"
+                    
+                    self.plainTextEdit_2.setPlainText(message)
+            except:
+                message="Please, select Chromosome"
+                QMessageBox.question(self,"Error",message,QMessageBox.Yes)
 
         if self.checkBox_2.isChecked()==False and self.checkBox.isChecked()==True:
             try:
@@ -325,6 +352,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     quality=listInfo[2]
                     mutation=listInfo[1]
                     try:
+                        #quality control ( sometime quality is missing or represent only with a dot)
                         if quality!="" and quality!='.':
                             if self.comboBox.currentText!=0:
                                 if float(quality)>=float(qual1) and float(quality)<=float(qual2)and mutation==self.comboBox.currentText():
@@ -393,7 +421,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
 
 
-    #Dynamic graph representing the different mutations along the chromosome
+    #Dynamic graph representing the different mutations along the chromosome with heat map which represent the density of mutation along the chromosome
     def dynamicPlot(self, chromosome):
         if type(chromosome)==str:
             try:
@@ -426,19 +454,19 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 for i in valueIt(positionLoop):
                     last=int(i)
 
-                #Calculate the percentage of each mutation
+                
                 listeposition=[]
                 liste_values=[]
                 for i in liste_position:
                     listeposition.append(int(i))
-                    liste_values.append(1)
+                    liste_values.append(1)#append with 1 to have just one dot for each mutation
 
                 #Initialize the values of the y and x axis
                 x=listeposition
                 y=liste_values
                 
                 position=liste_position
-                #Deux plot seront fait dans la même fenêtre
+                #Deux plot seront fait dans la même fenêtre, le plot heat map and plot for each mutation along chromosome
                 fig,(ax,ax2) = plt.subplots(nrows=2, ncols=1,sharex=False, figsize=(20,30))
                 ax.get_xaxis().set_visible(True)
                 ax.get_yaxis().set_visible(False)
@@ -448,9 +476,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 ax.set_title("Distribution of mutations on the Chromosome"+chromosome+"\n \n", size=13, color='Black', style='normal')
                 #Size of the points, color black
                 point= ax.scatter(x,y,color="black",  s=10)
-                #De base les annotations ne sont pas visibiles
+                #De base les annotations ne sont pas visibiles, on les rend visible avec l'évenement plus bas
                 annot = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",bbox=dict(boxstyle="round", fc="w"),arrowprops=dict(arrowstyle="->"))
                 annot.set_visible(False)
+                #legend du graphique déplacable
                 ax.legend(["Nombre de mutation: "+str(len(liste_position))+"\nNombre estimé de nucléotides: "+str(last)+"\nPourcentage de nucléotide mutant: "+str(len(liste_position)/last)]).draggable()
 
                # Add the list of types of mutations to label the mutation and its type
@@ -460,7 +489,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     #Loop which create each annot for each point
                     information = "Mutation:{},Insertion:{},Position:{}".format(",".join([liste_ref_mutation[n] for n in ind["ind"]]),",".join([liste_insert_mutation[n] for n in ind["ind"]]), ",".join([position[n] for n in ind["ind"]]))
                     annot.set_text(information)
-                    
+                #event whiwh allow the visibility of each point    
                 def hover(event):
                     vis = annot.get_visible()
                     if event.inaxes == ax:
@@ -475,17 +504,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                 fig.canvas.draw_idle()
                                 
                 fig.canvas.mpl_connect("motion_notify_event", hover)
-                #img=Image.open("picture/blanc.png")
-
-
                 #New plot heat map
                 ax.set_xlim(0,int(last))
                 ax.set_ylim(1,1)
-                #plt.imshow(img, extent=[0.1, 100, -1.0, 3.0])
                 # Create heatmap
-
                 heatmap, xedges, yedges = np.histogram2d(y, x, bins=(1,125))
-                 
                 # Plot heatmap
                 plt.title('Chromosome density along the chromosome')
               # need a colorbar to show the intensity scale
