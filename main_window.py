@@ -18,6 +18,9 @@ import re
 import matplotlib.pyplot as plt
 from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
+import numpy as np
+import numpy.random
+import matplotlib.pyplot as plt
 """"
 Declaration of the class About
 contain information about program and author
@@ -256,9 +259,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                         else:
                                             continue
                                 except:
-                                    #message="Please, enter the quality"
-                                    #QMessageBox.question(self,"Error", message, QMessageBox.yes)
-                                    #break
+                                    message="Please, enter the quality"
+                                    QMessageBox.question(self,"Error", message, QMessageBox.yes)
+                                    break
                         else:
                             message="Quality seems to be empty or deteriorate. Please checjk the validity of your file"
                             QMessageBox.question(self,"Error",message,QMessageBox.Yes)
@@ -439,12 +442,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 y=liste_values
                 
                 position=liste_position
-                fig,ax = plt.subplots()
+                fig,(ax,ax2) = plt.subplots(nrows=2, ncols=1,sharex=False)
                 ax.get_xaxis().set_visible(False)
                 ax.get_yaxis().set_visible(False)
-                ax.set_title("Distribution of mutations on the Chromosome"+chromosome, size=13, color='Black', style='normal')
+                ax2.get_xaxis().set_visible(False)
+                ax2.get_yaxis().set_visible(False)
+
+                ax.set_title("Distribution of mutations on the Chromosome"+chromosome+"\n \n", size=13, color='Black', style='normal')
                 #Size of the points, color black
-                point= plt.scatter(x,y,color="black",  s=10)
+                point= ax.scatter(x,y,color="black",  s=10)
                 #De base les annotations ne sont pas visibiles
                 annot = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",bbox=dict(boxstyle="round", fc="w"),arrowprops=dict(arrowstyle="->"))
                 annot.set_visible(False)
@@ -472,8 +478,25 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                 
                 fig.canvas.mpl_connect("motion_notify_event", hover)
                 img=Image.open("picture/blanc.png")
-                plt.imshow(img, zorder=0,  extent=[0.1, 105.0, -1.0, 3.0])
+
+
+                #New plot heat map
+                plt.imshow(img,zorder=0,extent=[0.1, 105.0, -1.0, 3.0])
+                # Create heatmap
+                heatmap, xedges, yedges = np.histogram2d(y, x, bins=(1,100))
+                 
+                # Plot heatmap
+                #.plt.clf()
+                #plt.title('HeatMap')
+                #plt.ylabel('y')
+                #plt.xlabel('x')
+              # need a colorbar to show the intensity scale
+                img= plt.imshow(heatmap, extent=[0.1, 105.0, -1.0, 3.0],facecolor='hot)
+                plt.colorbar(img)
+                fig.subplots_adjust(hspace=0)
                 plt.show()
+
+
             except KeyError:
                  message="Please select Chromosome & open file"
                  QMessageBox.question(self,"Error",message,QMessageBox.Yes)
@@ -500,8 +523,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 This section provide informations about chosen method.\n\
                 Dont forget to read every parameter the function need.\n\
                 Clear button allow you to clean the entire box.\n\
-                Don't forget, you can save and compare every informations in the box until you don't clear.
-                "
+                Don't forget, you can save and compare every informations in the box until you don't clear. "
             self.plainTextEdit.setPlainText(message )
         if self.comboBox_3.currentIndex()==1:
             message="Function which calcul the current number of Chromosome in the current vcf file \n\
